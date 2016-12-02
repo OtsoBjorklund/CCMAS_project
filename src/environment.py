@@ -23,7 +23,7 @@ class MusicEnvironment(Environment):
 
     def save_improvisation(self, filename):
         """ Save the improvisation to file """
-        src.musicxmlio.parts_dictionary_to_musicxml(self.parts, filename)
+        musicxmlio.parts_dictionary_to_musicxml(self.parts, filename)
 
     def save_info(self, folder, *args, **kwargs):
         folder = 'output'

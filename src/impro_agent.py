@@ -16,7 +16,7 @@ class ImprovisingAgent(CreativeAgent):
 
     def learn_vocabulary(self, filename, motif_length, num_motifs):
         """ Select random sequences of notes as motifs from the musicXML file """
-        notelist = src.musicxmlio.read_musicxml_to_list(filename)
+        notelist = musicxmlio.read_musicxml_to_list(filename)
         motif_list = []
 
         for _ in range(0, num_motifs):
