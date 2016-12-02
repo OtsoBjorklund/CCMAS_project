@@ -2,9 +2,9 @@
 # Otso Björklund, Kari Korpinen, Cedric Rantanen.
 
 from creamas import CreativeAgent
-import src.musicxmlio
+import musicxmlio
 import random
-from src.motif import Motif
+from motif import Motif
 
 
 class ImprovisingAgent(CreativeAgent):

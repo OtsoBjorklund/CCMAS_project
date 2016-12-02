@@ -8,3 +8,7 @@ class Motif():
 
     def notes(self):
         return self.notes
+
+    def similarity(self, other):
+        """ Return similarity [0,1] 1 being exactly same """
+        return 0.0

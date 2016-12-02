@@ -4,8 +4,8 @@
 
 from creamas import Environment
 from datetime import datetime
-import src.impro_agent
-import src.musicxmlio
+import impro_agent
+import musicxmlio
 
 
 class MusicEnvironment(Environment):

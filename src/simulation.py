@@ -1,6 +1,6 @@
 import creamas
-from src.environment import MusicEnvironment
-from src.impro_agent import ImprovisingAgent
+from environment import MusicEnvironment
+from impro_agent import ImprovisingAgent
 
 
 def run_simulation(num_steps, num_agents):
