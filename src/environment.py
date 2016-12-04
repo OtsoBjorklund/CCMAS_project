@@ -5,24 +5,24 @@
 from datetime import datetime
 
 import musicxmlio
-from creamas import Environment
+from creamas import Environment, Artifact
+
 
 class MusicEnvironment(Environment):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.parts = {}
+        self._parts = {}
 
-    def add_music_to_part(self, part_name, notes):
-        """ Add notes to the parts """
-        if part_name not in self.parts:
-            self.parts[part_name] = []
+    def add_music_to_part(self, part_name, motif):
+        """ Add motif to the parts """
+        if part_name not in self._parts:
+            self._parts[part_name] = []
 
-        for note in notes:
-            self.parts[part_name].append(note)
+        self._parts[part_name].append(motif)
 
     def save_improvisation(self, filename):
         """ Save the improvisation to file """
-        musicxmlio.parts_to_musicxml(self.parts, filename)
+        musicxmlio.parts_to_musicxml(self._parts, filename)
 
     def save_info(self, folder, *args, **kwargs):
         folder = 'output'
@@ -32,5 +32,20 @@ class MusicEnvironment(Environment):
         path = folder + '/' + filename
         self.save_improvisation(path)
 
-    def play_music(self, age):
-        pass
+    def get_musical_context(self, age):
+        context = []
+
+        for part in self._parts:
+            lower_index = max(0, len(self._parts[part]) - 5)
+            for i in range(lower_index, age):
+                context.append(self._parts[part][i])
+
+        return context
+
+    def agents_listen_and_evaluate(self, age):
+        context = self.get_musical_context(age)
+        for agent in self.get_agents(address=False):
+            agent.listen_to_others(context)
+            motif = Artifact(agent, self._parts[agent.name][age - 1], domain='music')
+            agent.evaluate(motif)
+

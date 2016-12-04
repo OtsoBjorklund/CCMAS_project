@@ -39,7 +39,7 @@ def parts_to_musicxml(parts, filename):
         Each part in the parts will be its own part in the MusicXML score.
 
         :param parts: The parts to be written in to the score.
-        :type parts: Dictionary with strings as keys and lists of music21.note.Note or music21.note.Rest objects as
+        :type parts: Dictionary with strings as keys and lists of Motif objects as
             values. The keys will be used as part names in the score.
         :param filename: filename for the MusicXML file.
         :type filename: String. """
@@ -47,20 +47,27 @@ def parts_to_musicxml(parts, filename):
     # Create score and then append the parts into it.
     score = music21.stream.Score()
 
+    # Add the parts to the score in the order of part name
+    ordered_part_names = sorted(parts)
+
     # Write each part separately into the score
-    for partname in parts:
-        notation_elements = parts[partname]
+    for partname in ordered_part_names:
+        motif_list = parts[partname]
         part = music21.stream.Part()
 
         # Set part id and partName
         part.id = partname
         part.partName = partname
 
-        # Append the notes/rests from the list of notation elements
+        # Append the notes/rests from the list of motifs
         # The notes have to be deep copied, because music21 cannot insert the same note object twice into a stream when
         # writing to a file.
-        for notation_elem in notation_elements:
-            part.append(deepcopy(notation_elem))
+        for motif in motif_list:
+            for notation_elem in motif.notes:
+                copied_elem = deepcopy(notation_elem)
+                # Set stem direction to None so that the notation program can set the stem directions intelligently.
+                copied_elem.stemDirection = None
+                part.append(copied_elem)
 
         # Insert part to score
         score.insert(0, part)
