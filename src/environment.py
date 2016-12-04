@@ -2,10 +2,10 @@
 # Otso Björklund, Kari Korpinen, Cedric Rantanen.
 #
 
-from creamas import Environment
 from datetime import datetime
-import impro_agent
+
 import musicxmlio
+from creamas import Environment
 
 class MusicEnvironment(Environment):
     def __init__(self, *args, **kwargs):
@@ -22,18 +22,15 @@ class MusicEnvironment(Environment):
 
     def save_improvisation(self, filename):
         """ Save the improvisation to file """
-        musicxmlio.parts_dictionary_to_musicxml(self.parts, filename)
+        musicxmlio.parts_to_musicxml(self.parts, filename)
 
     def save_info(self, folder, *args, **kwargs):
         folder = 'output'
-        timestamp =  '{:%Y%m%d_%H%M%S}'.format(datetime.now())
-        #form = 20161203_162901
+        timestamp = '{:%Y%m%d_%H%M%S}'.format(datetime.now())
+        # form = 20161203_162901
         filename = 'Improvisation_' + timestamp + '.xml'
         path = folder + '/' + filename
         self.save_improvisation(path)
 
     def play_music(self, age):
-        #self is like 'tcp://localhost:5555/'
-        # age is current number of num_steps
-        for agent in self.get_agents(address=False):
-            self.add_music_to_part(agent.name, agent.play_sequence())
+        pass

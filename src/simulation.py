@@ -1,5 +1,6 @@
 import creamas
 from environment import MusicEnvironment
+
 from impro_agent import ImprovisingAgent
 
 
@@ -14,4 +15,4 @@ def run_simulation(num_steps, num_agents):
 
 
 if __name__ == "__main__":
-    run_simulation(20, 4)
+    run_simulation(5, 4)

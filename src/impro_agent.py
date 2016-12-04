@@ -1,39 +1,30 @@
 # MACI. Course project for Computational Creativity and Multi-Agent Systems. Fall 2016.
 # Otso Björklund, Kari Korpinen, Cedric Rantanen.
 
-from creamas import CreativeAgent
-import musicxmlio
 import random
+
+from creamas import CreativeAgent
 from motif import Motif
+
+from src import musicxmlio
 
 
 class ImprovisingAgent(CreativeAgent):
 
     def __init__(self, env, filename, motif_length, num_motifs, name):
         super().__init__(env)
-        self.vocabulary = self.learn_vocabulary(filename, motif_length, num_motifs)
+        self.vocabulary = musicxmlio.select_random_motifs(filename, motif_length, num_motifs)
         self.name = name
 
-    def learn_vocabulary(self, filename, motif_length, num_motifs):
-        """ Select random sequences of notes as motifs from the musicXML file """
-        notelist = musicxmlio.read_musicxml_to_list(filename)
-        motif_list = []
-
-        for _ in range(0, num_motifs):
-            rand_index = random.randint(0, len(notelist) - motif_length)
-            notes = []
-            for i in range(rand_index, rand_index + motif_length):
-                notes.append(notelist[i])
-
-            motif_list.append(Motif(notes))
-
-        return motif_list
-
     def play_sequence(self):
-        return random.choice(self.vocabulary).notes
+        m = random.choice(self.vocabulary)
+        print(m)
+
+        return m.notes
 
     def evaluate(self, artifact):
         pass
 
     async def act(self):
-        pass
+        # Writing concurrently to the dictionary should be ok as all agents write to different keys...
+        self.env.add_music_to_part(self.name, self.play_sequence())
