@@ -1,7 +1,6 @@
 
-# Todo: Cedric toteuttaa
-
 class Memory():
+    """ The memory of the agents. Container class for Motifs. """
     pass
     # -List etc. of motifs
     # -Find most similar(motif)
