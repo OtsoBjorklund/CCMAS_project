@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>musicxmlio module &#8212; MACI 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="MACI 0.1 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-musicxmlio">
+<span id="musicxmlio-module"></span><h1>musicxmlio module<a class="headerlink" href="#module-musicxmlio" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="musicxmlio.parts_to_musicxml">
+<code class="descclassname">musicxmlio.</code><code class="descname">parts_to_musicxml</code><span class="sig-paren">(</span><em>parts</em>, <em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/musicxmlio.html#parts_to_musicxml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#musicxmlio.parts_to_musicxml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the parts dictionary into a MusicXML file with name filename.
+Each part in the parts will be its own part in the MusicXML score.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parts</strong> (<em>Dictionary with strings as keys and lists of Motif objects as
+values. The keys will be used as part names in the score.</em>) &#8211; The parts to be written in to the score.</li>
+<li><strong>filename</strong> (<em>String.</em>) &#8211; filename for the MusicXML file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="musicxmlio.read_musicxml_to_list">
+<code class="descclassname">musicxmlio.</code><code class="descname">read_musicxml_to_list</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/musicxmlio.html#read_musicxml_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#musicxmlio.read_musicxml_to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read all the parts in the MusicXML file and return a list of note or rest objects.
+Ignores everything other than Note and Rest objects. The parts are concatenated to each other
+so that parts that were simultaneous in the score are sequential in the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>String.</em>) &#8211; The path to the MusicXML file to be read.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Returns a list of notes and rests.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">List of music21.note.Note and music21.note.Rest objects.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="musicxmlio.select_random_motifs">
+<code class="descclassname">musicxmlio.</code><code class="descname">select_random_motifs</code><span class="sig-paren">(</span><em>filename</em>, <em>motif_length</em>, <em>num_motifs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/musicxmlio.html#select_random_motifs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#musicxmlio.select_random_motifs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select random sequences of notes as motifs from a MusicXML file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>String.</em>) &#8211; Name of the file from which motifs will be selected.</li>
+<li><strong>motif_length</strong> (<em>Float.</em>) &#8211; The length of the motifs to be selected in quarter notes.</li>
+<li><strong>num_motifs</strong> (<em>Integer.</em>) &#8211; Number of motifs to be selected from file.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of num_motifs motifs with length motif_length.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">List of motif.Motif objects.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/musicxmlio.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Otso Björklund, Cedric Rantanen, Kari Korpinen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/musicxmlio.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
