@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = ../../documentation
+BUILDDIR      = /Users/otsobjorklund/Documents/Opiskelu/Computational_Creativity/Project/documentation
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
