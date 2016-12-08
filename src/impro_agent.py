@@ -2,9 +2,11 @@
 # Otso Björklund, Kari Korpinen, Cedric Rantanen.
 
 import random
+from memory import Memory
 
 from creamas import CreativeAgent, Artifact
 from motif import Motif
+
 
 import musicxmlio
 
@@ -15,19 +17,22 @@ class ImprovisingAgent(CreativeAgent):
         super().__init__(env)
         self._name = name
         self._motif_length = motif_length
-        # Todo: vocabulary should be a Memory object
-        self._vocabulary = self.create_vocabulary(filename, motif_length, num_motifs)
+        self._memory = self.create_vocabulary(filename, motif_length, num_motifs)
         # What the agent remembers of other agents playing
         self._memory_of_situation = []
 
         # The overall evaluation of the agent by itself
         self._sum_of_evaluations = 0.0
         self._motifs_played = 0
-        self._overall_performance = 0.0
+        self._overall_performance = random.random()
 
     def create_vocabulary(self, filename, motif_length, num_motifs):
-        # Todo: Enable learning from multiple files.
-        return musicxmlio.select_random_motifs(filename, motif_length, num_motifs)
+        memory = Memory(num_motifs)
+        random_motifs = musicxmlio.select_random_motifs(filename, motif_length, num_motifs)
+        for m in random_motifs:
+            memory.memorize(m)
+
+        return memory
 
     @property
     def name(self):
@@ -37,17 +42,20 @@ class ImprovisingAgent(CreativeAgent):
         """ Find motif with the best evaluation """
         best_motif = None
         best_evaluation = 0.0
-        for motif in self._vocabulary:
+        for motif in self._memory:
             evaluation = self.evaluate(Artifact(self, obj=motif, domain='music'))
             if evaluation > best_evaluation:
                 best_motif = motif
                 best_evaluation = evaluation
 
-        # Todo: Try variations and improving the motif using them
+        tranposed = Motif.transpose_random_note(best_motif)
+        if self.evaluate(Artifact(self, obj = motif, domain = 'music')) > best_evaluation:
+            best_motif = tranposed
+            self._memory.memorize(best_motif)
 
         # Todo: improve the evaluation of the overall performance
         overall_performance = (self._sum_of_evaluations + best_evaluation) / (self._motifs_played + 1)
-        if overall_performance <= self._overall_performance - 0.01:
+        if overall_performance <= self._overall_performance:
             best_motif = Motif.get_rest(self._motif_length)
 
         self._overall_performance = overall_performance
@@ -67,5 +75,5 @@ class ImprovisingAgent(CreativeAgent):
         return fit
 
     async def act(self):
-        # Writing concurrently to the dictionary should be ok as all agents write to different keys...
+        # Writing concurrently to the dictionary should be ok as all agents write to different keys.
         self.env.add_music_to_part(self.name, self.play_motif())

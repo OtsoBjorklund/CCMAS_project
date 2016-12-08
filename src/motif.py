@@ -90,9 +90,9 @@ class Motif:
         :return: A rating in the range [0, 1] with 0 being a very bad fit and 1 being a very good fit.
         :rtype: float """
 
-        # If context is empty, then anything goes
+        # If context is empty then cannot really fit or not fit. Return 0.5.
         if not context:
-            return 1.0
+            return 0.5
 
         # Compute the average similarity to other motifs in the musical context
         avg_similarity = 0.0
@@ -127,13 +127,14 @@ class Motif:
             :return: A transposed copy of motif
             :rtype: Motif object. """
 
-        copied_motif = deepcopy(motif)
-        for notation_elem in copied_motif.notes:
+        # Deepcopy the motif and get its notes to ensure the original motif is unaffected
+        notes = deepcopy(motif).notes
+        for notation_elem in notes.notes:
             # Only notes can be transposed.
             if notation_elem.isNote:
                 notation_elem.pitch.transpose(steps, inPlace=True)
 
-        return copied_motif
+        return Motif(notes)
 
     @staticmethod
     def transpose_random_note(motif):
@@ -144,17 +145,18 @@ class Motif:
             :return: A transposed copy of motif
             :rtype: Motif """
 
-        copied_motif = deepcopy(motif)
+        # Deepcopy the motif and get its notes to ensure the original motif is unaffected
+        notes = deepcopy(motif).notes
 
         # Select a random note
-        for _ in range(0, len(copied_motif.notes)):
-            random_note = random.choice(copied_motif.notes)
+        for _ in range(0, len(notes)):
+            random_note = random.choice(notes)
             if random_note.isNote:
+                transposition = random.randint(-12, 12)
+                random_note.transpose(transposition, inPlace=True)
                 break
 
-        transposition = random.randint(-12, 12)
-        random_note.transpose(transposition, inPlace=True)
-        return copied_motif
+        return Motif(notes)
 
     @staticmethod
     def levenshtein(s, t):
