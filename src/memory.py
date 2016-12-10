@@ -7,6 +7,7 @@ class Memory():
         self._size = size
 
     def memorize(self, motif):
+        """ Add new motif to memory. If memory is full replace the most similar motif with the new one. """
         if len(self._motifs) < self._size:
             self._motifs.append(motif)
         else:
@@ -34,3 +35,6 @@ class Memory():
 
     def __iter__(self):
         return self._motifs.__iter__()
+
+    def __len__(self):
+        return len(self._motifs)

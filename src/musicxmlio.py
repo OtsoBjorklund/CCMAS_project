@@ -5,6 +5,7 @@
 
 import music21
 import random
+import os
 from copy import deepcopy
 from motif import Motif
 
@@ -29,7 +30,9 @@ def read_musicxml_to_list(filepath):
         for element in notation_elements:
             # Append only objects of type Note or Rest.
             if type(element) is music21.note.Note or type(element) is music21.note.Rest:
-                notelist.append(element)
+                # Filter out grace notes with duration 0.
+                if element.duration.quarterLength != 0:
+                    notelist.append(element)
 
     return notelist
 
@@ -74,6 +77,10 @@ def parts_to_musicxml(parts, filename):
 
     # Write score to file
     score.write('musicxml', filename)
+
+
+def get_random_filename(path):
+    return path + random.choice(os.listdir(path))
 
 
 def select_random_motifs(filename, motif_length, num_motifs):
@@ -126,6 +133,5 @@ def select_random_motifs(filename, motif_length, num_motifs):
         motif_list.append(Motif(notes))
 
     return motif_list
-
 
 

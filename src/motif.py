@@ -2,7 +2,9 @@
 # Otso Björklund, Kari Korpinen, Cedric Rantanen.
 
 import random
+from math import floor
 from music21.note import Rest
+import music21
 from copy import deepcopy
 
 
@@ -62,12 +64,12 @@ class Motif:
 
                 string_repres += interval + duration_relation
                 prev_pitch = notation_elem.pitch
-                prev_dur = notation_elem.duration.quarterLength
             else:
                 # For rests use r and the relative change in duration when compared to last note. This does not handle
                 # multiple consecutive rests very well, fortunately they are quite rare.
                 string_repres += 'r' + str(notation_elem.duration.quarterLength/prev_dur)
-                prev_dur = notation_elem.duration.quarterLength
+
+            prev_dur = notation_elem.duration.quarterLength
 
         return string_repres
 
@@ -90,8 +92,8 @@ class Motif:
         :return: A rating in the range [0, 1] with 0 being a very bad fit and 1 being a very good fit.
         :rtype: float """
 
-        # If context is empty then cannot really fit or not fit. Return 0.5.
-        if not context:
+        # If context is empty, or this motif is all rests then cannot really fit or not fit. Return 0.5.
+        if not context or self.is_all_rests():
             return 0.5
 
         # Compute the average similarity to other motifs in the musical context
@@ -101,6 +103,14 @@ class Motif:
         avg_similarity /= len(context)
 
         return avg_similarity
+
+    def is_all_rests(self):
+        for elem in self.notes:
+            if elem.isNote:
+                return False
+
+        return True
+
 
     @staticmethod
     def get_rest(length_quarters):
@@ -129,7 +139,7 @@ class Motif:
 
         # Deepcopy the motif and get its notes to ensure the original motif is unaffected
         notes = deepcopy(motif).notes
-        for notation_elem in notes.notes:
+        for notation_elem in notes:
             # Only notes can be transposed.
             if notation_elem.isNote:
                 notation_elem.pitch.transpose(steps, inPlace=True)
@@ -152,17 +162,104 @@ class Motif:
         for _ in range(0, len(notes)):
             random_note = random.choice(notes)
             if random_note.isNote:
-                transposition = random.randint(-12, 12)
+                # Limit transposition to a perfect fifth up or down
+                transposition = random.randint(-7, 7)
                 random_note.transpose(transposition, inPlace=True)
                 break
 
         return Motif(notes)
 
     @staticmethod
+    def get_random_rhythmic_variation(motif):
+        # Deepcopy the motif and get its notes to ensure the original motif is unaffected
+
+        original_length = 0.0
+        for note in motif.notes:
+            original_length += note.duration.quarterLength
+
+        notes = deepcopy(motif).notes
+
+        diminuation = random.choice([True, False])
+
+        if diminuation:
+            # Reduce the duration to half and append the rhythmically diminuated motif to itself.
+            for note in notes:
+                note.duration.quarterLength /= 2
+
+            notes.extend(notes)
+        else:
+            # Invert the rhythm
+            for i in range(0, floor(len(notes)/2)):
+                tmp_dur = notes[i].duration.quarterLength
+                notes[i].duration.quarterLength = notes[len(notes)-1-i].duration.quarterLength
+                notes[len(notes) - 1 - i].duration.quarterLength = tmp_dur
+
+        return Motif(notes)
+
+    @staticmethod
+    def get_random_variation(motif):
+        """ Get a random variation of motif. The variation is either a transposition
+            of a random note or a rhythmic variation. """
+
+        # If the motif is all rests do nothing.
+        if motif.is_all_rests():
+            return motif
+
+        rhythmic_variation = random.choice([True, False])
+        if rhythmic_variation:
+            return Motif.get_random_rhythmic_variation(motif)
+        else:
+            return Motif.transpose_random_note(motif)
+
+    @staticmethod
+    def transpose_to_key_of_context(motif, context):
+
+        # Analyse the keys of the musical context and the motif
+        context_key = Motif.analyse_key(context)
+        motif_key = Motif.analyse_key([motif])
+
+        # If keys are the same, or key could not be analyzed then do nothing. Otherwise transpose the motif.
+        if motif_key == context_key or not motif_key or not context_key:
+            return motif
+        else:
+            return Motif.transpose_to_key(motif, motif_key, context_key)
+
+    @staticmethod
+    def transpose_to_key(motif, original_key, target_key):
+        # By how many half-steps original key's tonic pitch differs from C
+        original_steps_from_c = (original_key.sharps * 7) % 12
+        # By how many half-steps target key's tonic pitch differs from C
+        target_steps_from_c = (target_key.sharps * 7) % 12
+        # The number of steps and direction needed to transpose is their difference
+        transposition_steps = target_steps_from_c - original_steps_from_c
+        transposed_motif = Motif.transpose(motif, transposition_steps)
+        return transposed_motif
+
+    @staticmethod
+    def analyse_key(motifs):
+        stream_context = music21.stream.Score()
+        all_rests = True
+        for m in motifs:
+            for n in m.notes:
+                if n.isNote:
+                    all_rests = False
+                    stream_context.insert(0, deepcopy(n))
+
+        if not all_rests:
+            return stream_context.analyze('key')
+        else:
+            return None
+
+    @staticmethod
     def levenshtein(s, t):
         """ Compute the edit distance between two strings.
             From Wikipedia article; Iterative with two matrix rows.
-            Copied from course material. """
+            Copied from course material.
+
+            :param s: String to be compared.
+            :type s: str
+            :param t: String to be compared.
+            :type t: str"""
         if s == t:
             return 0
         elif len(s) == 0:
