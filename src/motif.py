@@ -3,7 +3,6 @@
 
 import random
 from math import floor
-from music21.note import Rest
 import music21
 from copy import deepcopy
 
@@ -16,6 +15,7 @@ class Motif:
     def __init__(self, notes):
         self._notes = notes
         self._string_representation = self.get_string_representation()
+        self._transposition_table = ['']
 
     def __deepcopy__(self, memodict={}):
         """ Create a deepcopy of Motif """
@@ -92,9 +92,13 @@ class Motif:
         :return: A rating in the range [0, 1] with 0 being a very bad fit and 1 being a very good fit.
         :rtype: float """
 
-        # If context is empty, or this motif is all rests then cannot really fit or not fit. Return 0.5.
-        if not context or self.is_all_rests():
+        # If context is empty, then cannot really fit or not fit. Return 0.5.
+        if not context:
             return 0.5
+
+        # If this motif is all rests, then there is not fit to context at all.
+        if self.is_all_rests():
+            return 0.0
 
         # Compute the average similarity to other motifs in the musical context
         avg_similarity = 0.0
@@ -105,12 +109,15 @@ class Motif:
         return avg_similarity
 
     def is_all_rests(self):
+        """ Check if the Motif is entirely composed of rests.
+            :return: True if motif is all rests, False otherwise.
+            :rtype: bool """
+
         for elem in self.notes:
             if elem.isNote:
                 return False
 
         return True
-
 
     @staticmethod
     def get_rest(length_quarters):
@@ -121,13 +128,14 @@ class Motif:
             :return: Rest of length_quarters.
             :rtype: Motif """
 
-        rest = Rest()
+        rest = music21.note.Rest()
         rest.duration.quarterLength = length_quarters
         return Motif([rest])
 
     @staticmethod
     def transpose(motif, steps):
         """ Transpose motif up or down steps half-steps. Returns a transposed copy.
+            Also transposes the notes to a sensible range, i.e. they are not ridiculously high or low.
 
             :param motif: Motif that is transposed
             :type motif: Motif
@@ -139,10 +147,27 @@ class Motif:
 
         # Deepcopy the motif and get its notes to ensure the original motif is unaffected
         notes = deepcopy(motif).notes
+        highest_octave = 0
+        lowest_octave = 10
         for notation_elem in notes:
             # Only notes can be transposed.
             if notation_elem.isNote:
                 notation_elem.pitch.transpose(steps, inPlace=True)
+                if notation_elem.pitch.octave < lowest_octave:
+                    lowest_octave = notation_elem.pitch.octave
+                if notation_elem.pitch.octave > highest_octave:
+                    highest_octave = notation_elem.pitch.octave
+
+        # Check that octaves are reasonable and transpose down or up an octave depending.
+        # Only transpose in one direction.
+        if highest_octave > 6:
+            for notation_elem in notes:
+                if notation_elem.isNote:
+                    notation_elem.pitch.transpose(-12, inPlace=True)
+        elif lowest_octave < 2:
+            for notation_elem in notes:
+                if notation_elem.isNote:
+                    notation_elem.pitch.transpose(12, inPlace=True)
 
         return Motif(notes)
 
@@ -164,21 +189,24 @@ class Motif:
             if random_note.isNote:
                 # Limit transposition to a perfect fifth up or down
                 transposition = random.randint(-7, 7)
-                random_note.transpose(transposition, inPlace=True)
+                random_note.pitch.transpose(transposition, inPlace=True)
                 break
 
         return Motif(notes)
 
     @staticmethod
     def get_random_rhythmic_variation(motif):
+        """ Create a random rhythmic variation of the motif. The motif can be
+            -either diminuated rhythmically: every duration is halved and the motif is appended to itself, or
+            -reversed in rhythm.
+
+            :param motif: Motif used for creating the variation.
+            :type motif: Motif
+            :return: A variation of motif as a copy.
+            :rtype: Motif """
+
         # Deepcopy the motif and get its notes to ensure the original motif is unaffected
-
-        original_length = 0.0
-        for note in motif.notes:
-            original_length += note.duration.quarterLength
-
         notes = deepcopy(motif).notes
-
         diminuation = random.choice([True, False])
 
         if diminuation:
@@ -198,8 +226,13 @@ class Motif:
 
     @staticmethod
     def get_random_variation(motif):
-        """ Get a random variation of motif. The variation is either a transposition
-            of a random note or a rhythmic variation. """
+        """ Get a random variation of motif (as copy). The variation is either a transposition
+            of a random note or a rhythmic variation.
+
+            :param motif: The motif used for transformation.
+            :type motif: Motif
+            :return: Varied copy of motif.
+            :rtype: Motif """
 
         # If the motif is all rests do nothing.
         if motif.is_all_rests():
@@ -213,6 +246,14 @@ class Motif:
 
     @staticmethod
     def transpose_to_key_of_context(motif, context):
+        """ Get a copy of motif transposed to the key of context.
+
+            :param motif: Motif to be transposed.
+            :type motif: Motif
+            :param context: Iterable collection of motifs.
+            :type context: iterable
+            :return: Transposed copy of motif.
+            :rtype: Motif """
 
         # Analyse the keys of the musical context and the motif
         context_key = Motif.analyse_key(context)
@@ -226,6 +267,19 @@ class Motif:
 
     @staticmethod
     def transpose_to_key(motif, original_key, target_key):
+        """ Transpose motif from original_key to target_key.
+            Computation is performed using the number of sharps in the key signature.
+            If the key signature contains 2 sharps for example, the tonic of that key is 2 perfect fifths higher
+            than the pitch C. This transposition can be reduced to within an octave by computing the required
+            transposition in half-steps and taking mod 12.
+
+            :param motif: Motif to be transposed.
+            :type motif: Motif
+            :param original_key: The original key of the motif.
+            :type original_key: music21.key
+            :param target_key: The target key for the motif.
+            :type target_key: music21.key """
+
         # By how many half-steps original key's tonic pitch differs from C
         original_steps_from_c = (original_key.sharps * 7) % 12
         # By how many half-steps target key's tonic pitch differs from C
@@ -237,6 +291,13 @@ class Motif:
 
     @staticmethod
     def analyse_key(motifs):
+        """ Analyse the key of motifs using music21 analysis.
+
+            :param motifs: Iterable collection of motifs.
+            :type motifs: iterable.
+            :return: key of motifs. None if there are no notes in the motif.
+            :rtype: music21.key """
+
         stream_context = music21.stream.Score()
         all_rests = True
         for m in motifs:

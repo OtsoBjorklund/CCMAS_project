@@ -80,6 +80,11 @@ def parts_to_musicxml(parts, filename):
 
 
 def get_random_filename(path):
+    """ Get the relative path of a random file from directory specified by path.
+        :param path: The path of the directory from which to select random file.
+        :type path: str
+        :return: Path to randomly selected file.
+        :rtype: str """
     return path + random.choice(os.listdir(path))
 
 
@@ -122,11 +127,23 @@ def select_random_motifs(filename, motif_length, num_motifs):
                     else:
                         shortened_elem = music21.note.Note(notation_elem.nameWithOctave)
                         shortened_elem.duration.quarterLength = motif_length - cumulated_duration
+
+                    # Have to check for zero, because float roundings with tuplet rhythms might lead to situations where
+                    # a note or rest is created with duration 0.0.
+                    # What a horrible idea to use floats instead of rational numbers for durations in notation data...
+                    if shortened_elem.duration.quarterLength != 0.0:
+                        notes.append(shortened_elem)
+
+                    # Motif is full so stop.
+                    break
             else:
                 # If the random index has gone beyond the list, complete the motif with a rest.
                 rest = music21.note.Rest()
                 rest.duration.quarterLength = motif_length - cumulated_duration
-                notes.append(rest)
+
+                # Have to check for zero, due to problems with music21 duration arithmetic.
+                if rest.duration.quarterLength != 0.0:
+                    notes.append(rest)
                 break
 
         # Create a Motif from the notes and append it to the list.
