@@ -7,6 +7,7 @@ from datetime import datetime
 import musicxmlio
 import os
 from creamas import Environment, Artifact
+from math import ceil
 
 
 class MusicEnvironment(Environment):
@@ -16,6 +17,7 @@ class MusicEnvironment(Environment):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._parts = {}
+        self._max_agent_memory_cap = None
 
     def add_music_to_part(self, part_name, motif):
         """ Add motif to the parts.
@@ -52,32 +54,48 @@ class MusicEnvironment(Environment):
         path = output_dir + '/' + filename
         self.save_improvisation(path)
 
-    def get_musical_context(self, age, distance=3):
-        """ Get all the motifs that all agents have played before age and after distance.
+    @property
+    def max_agent_memory_capacity(self):
+        """ The largest memory capacity of any agent in the environment. """
+
+        # Agents cannot leave or enter the environment, so this needs to be computed only once
+        if self._max_agent_memory_cap is None:
+            max_mem_size = 0
+            for agent in self.get_agents(address=False):
+                mem_size = agent.memory_capacity
+                if mem_size > max_mem_size:
+                    max_mem_size = mem_size
+
+            self._max_agent_memory_cap = max_mem_size
+
+        return self._max_agent_memory_cap
+
+    def get_latest_motifs(self, age):
+        """ Get all the motifs that have been played recently. Get only slightly more motifs
+            than can be remembered by agent with maximum memory size.
 
             :param age: The current number of simulation step.
             :type age: int
-            :param distance: How many steps back should be considered.
-            :type distance: int
             :return: List of Motifs.
             :rtype: list """
 
-        context = []
+        latest_motifs = []
+        distance = ceil(self.max_agent_memory_capacity / len(self.get_agents(address=False)))
 
         for part in self._parts:
             lower_index = max(0, len(self._parts[part]) - distance)
             for i in range(lower_index, age):
-                context.append(self._parts[part][i])
+                latest_motifs.append(self._parts[part][i])
 
-        return context
+        return latest_motifs
 
     def agents_listen_and_evaluate(self, age):
         """ Agents listen to what has been played in the environment
             and evaluate their own performance in regard to that. """
 
-        context = self.get_musical_context(age)
+        latest_motifs = self.get_latest_motifs(age)
         for agent in self.get_agents(address=False):
-            agent.listen_to_others(context)
+            agent.listen_to_others(latest_motifs, age)
             motif = Artifact(agent, self._parts[agent.name][age - 1], domain='music')
             agent.evaluate(motif)
 

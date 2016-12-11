@@ -5,32 +5,41 @@ import random
 
 
 class Memory():
-    """ The memory of the agents. Container class for Motifs. Is iterable. """
+    """ The memory of the agents. Container class for Motifs. Is iterable.
 
-    def __init__(self, size):
+        :param capacity: The maximum number of motifs that can be remembered.
+        :type capacity: int """
+
+    def __init__(self, capacity):
         self._motifs = []
-        self._size = size
+        self._capacity = capacity
 
-    def memorize(self, motif, replace_most_similar=True):
-        """ Add new motif to memory. If memory is full replace the most similar motif with the new one.
+    @property
+    def capacity(self):
+        return self._capacity
+
+    def memorize(self, motif, step=0, replace_most_similar=True):
+        """ Add new motif to memory. If memory is full replace the most similar or oldest motif with the new one.
 
             :param motif: Motif to be added to memory.
             :type motif: Motif
-            :param replace_most_similar: When memory is full if this is true the new motif replaces the most similar
-                motif in memory. If this is false, then replaces a random motif.
+            :param step: The step of simulation in which the motif was added.
+            :type step: int
+            :param replace_most_similar: When memory is full, if this is true the new motif replaces the most similar
+                motif in memory. If this is false, then replaces the oldest motif: the one with smallest step.
             :type replace_most_similar: bool """
 
-        if len(self._motifs) < self._size:
-            self._motifs.append(motif)
+        if len(self._motifs) < self._capacity:
+            self._motifs.append((motif, step))
         else:
             if replace_most_similar:
                 # Replace most similar motif with new motif
                 index = self.index_of_most_similar(motif)
             else:
-                # Replace random
-                index = random.randrange(0, len(self._motifs))
+                # Replace oldest, ie with smallest step
+                index = self.index_of_oldest()
 
-            self._motifs[index] = motif
+            self._motifs[index] = (motif, step)
 
     def find_most_similar(self, m):
         """ Find the motif from memory that is the most similar to m.
@@ -39,7 +48,7 @@ class Memory():
             :type m: Motif """
 
         index = self.index_of_most_similar(m)
-        return self._motifs[index]
+        return self._motifs[index][0]
 
     def find_least_similar(self, m):
         """ Find the motif that is least similar to m.
@@ -48,13 +57,28 @@ class Memory():
             :type m: Motif """
 
         min_similarity = 1.0
-        for motif in self._motifs:
+        for entry in self._motifs:
+            motif = entry[0]
             similarity = motif.similarity(m)
             if similarity < min_similarity:
                 min_similarity = similarity
                 least_similar = motif
 
         return least_similar
+
+    def index_of_oldest(self):
+        if not self._motifs:
+            return 0
+
+        index = 0
+        min_step = self._motifs[0][1]
+        for i in range(0, len(self._motifs)):
+            step = self._motifs[i][1]
+            if step < min_step:
+                index = i
+                min_step = step
+
+        return index
 
     def index_of_most_similar(self, m):
         """ Find the index of the motif in memory that is most similar to m.
@@ -65,7 +89,8 @@ class Memory():
         max_similarity = 0.0
         index = 0
         for i in range(0, len(self._motifs)):
-            sim = self._motifs[i].similarity(m)
+            motif = self._motifs[i][0]
+            sim = motif.similarity(m)
             if sim > max_similarity:
                 max_similarity = sim
                 index = i
@@ -73,7 +98,22 @@ class Memory():
         return index
 
     def __iter__(self):
-        return self._motifs.__iter__()
+        """ Provides an iterator that iterates over the Motifs only. """
+        class MemoryIterator:
+            def __init__(self, tuple_list):
+                self._tuple_list = tuple_list
+                self._index = 0
+
+            def __next__(self):
+                if self._index < len(self._tuple_list):
+                    motif = self._tuple_list[self._index][0]
+                    self._index += 1
+                    return motif
+                else:
+                    raise StopIteration()
+
+        return MemoryIterator(self._motifs)
 
     def __len__(self):
+        """ Number of motifs in memory. """
         return len(self._motifs)

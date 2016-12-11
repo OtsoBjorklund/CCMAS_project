@@ -108,6 +108,10 @@ class ImprovisingAgent(CreativeAgent):
     def name(self):
         return self._name
 
+    @property
+    def memory_capacity(self):
+        return self._memory_of_situation.capacity
+
     def play_motif(self):
         """ Find motif with the best evaluation from the agents vocabulary. Create a variation of the motif and see if it
             would be better. If the variation is better, memorize it and return it.
@@ -134,7 +138,7 @@ class ImprovisingAgent(CreativeAgent):
         if evaluation_of_variation >= best_evaluation:
             motif_to_play = variation
             best_evaluation = evaluation_of_variation
-            self._vocabulary.memorize(motif_to_play, replace_most_similar=True)
+            self._vocabulary.memorize(motif_to_play)
 
         # Estimate what the future confidence level would be if the agent played the motif
         estimate_of_future_confidence = (self._sum_of_evaluations + best_evaluation) / (self._steps_acted + 1)
@@ -155,20 +159,23 @@ class ImprovisingAgent(CreativeAgent):
         # The motifs are handled in a key invariant way so memorizing the transposed motif is unnecessary.
         return Motif.transpose_to_key_of_context(motif_to_play, self._memory_of_situation)
 
-    def listen_to_others(self, musical_context):
+    def listen_to_others(self, musical_context, step):
         """ Update the agent's knowledge of the musical situation
             and evaluate how well the last played motif worked out.
             Update the confidence level of the agent.
+
             :param musical_context: Motifs recently played in the environment.
-            :type musical_context: list """
+            :type musical_context: list
+            :param step: The step of the simulation.
+            :type step: int """
 
         # Update the agent's memory of the situation by choosing random motifs from the musical_context and
-        # putting them into the memory. The agent can at most perceive half of the musical context.
-        num_motifs = floor(len(musical_context) / 2)
+        # putting them into the memory.
+        num_motifs = len(self._memory_of_situation)
         perceived_motifs = random.sample(musical_context, num_motifs)
         for motif in perceived_motifs:
-            # The perceived motifs replace old motifs in the memory randomly.
-            self._memory_of_situation.memorize(motif, replace_most_similar=False)
+            # The perceived motifs replace oldest motifs in the memory.
+            self._memory_of_situation.memorize(motif, step=step, replace_most_similar=False)
 
         # Find most surprising motif from the motifs perceived from environment
         most_surprising = None
@@ -194,7 +201,7 @@ class ImprovisingAgent(CreativeAgent):
 
     def surprisingness(self, motif):
         # TODO: Kari
-        return random.random()
+        return 0.5
 
     def evaluate(self, artifact):
         """ Evaluate how good the motif was by considering how well it fit into what the agent

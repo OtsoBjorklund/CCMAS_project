@@ -60,14 +60,14 @@ class Motif:
                 interval = str(prev_pitch.pitchClass - notation_elem.pitch.pitchClass)
                 # Compute the relation of the duration of this note and the duration of the previous note.
                 # This tells by what factor the duration changes when moving from prev_note to this note.
-                duration_relation = str(notation_elem.duration.quarterLength/prev_dur)
+                duration_relation = "{!s:.2}".format(notation_elem.duration.quarterLength/prev_dur)
 
                 string_repres += interval + duration_relation
                 prev_pitch = notation_elem.pitch
             else:
                 # For rests use r and the relative change in duration when compared to last note. This does not handle
                 # multiple consecutive rests very well, fortunately they are quite rare.
-                string_repres += 'r' + str(notation_elem.duration.quarterLength/prev_dur)
+                string_repres += 'r' + "{!s:.2}".format(notation_elem.duration.quarterLength/prev_dur)
 
             prev_dur = notation_elem.duration.quarterLength
 
@@ -209,7 +209,16 @@ class Motif:
         notes = deepcopy(motif).notes
         diminuation = random.choice([True, False])
 
-        if diminuation:
+        # Find shortest duration in motif in order to decide if it makes sense to diminuate the rhythm.
+        shortest_duration = 10.0
+        for notation_elem in motif.notes:
+            if notation_elem.duration.quarterLength < shortest_duration:
+                shortest_duration = notation_elem.duration.quarterLength
+
+        # If the shortest duration is larger than 1/32 note then it is possible to diminuate the rhythm
+        can_diminuate = shortest_duration > (1.0/32)
+
+        if diminuation and can_diminuate:
             # Reduce the duration to half and append the rhythmically diminuated motif to itself.
             for note in notes:
                 note.duration.quarterLength /= 2
@@ -321,6 +330,7 @@ class Motif:
             :type s: str
             :param t: String to be compared.
             :type t: str"""
+
         if s == t:
             return 0
         elif len(s) == 0:
