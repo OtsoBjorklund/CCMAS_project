@@ -215,8 +215,8 @@ class Motif:
             if notation_elem.duration.quarterLength < shortest_duration:
                 shortest_duration = notation_elem.duration.quarterLength
 
-        # If the shortest duration is larger than 1/32 note then it is possible to diminuate the rhythm
-        can_diminuate = shortest_duration > (1.0/32)
+        # If the shortest duration is at least 1/16 then it is possible to diminuate the rhythm
+        can_diminuate = shortest_duration >= (1.0/16)
 
         if diminuation and can_diminuate:
             # Reduce the duration to half and append the rhythmically diminuated motif to itself.
