@@ -13,6 +13,16 @@ class Motif:
         The agents handle all of their playing by using Motif objects. """
 
     def __init__(self, notes):
+        # Put the notes into a sensible octave range
+        lowest_octave = 1
+        highest_octave = 8
+        for notation_elem in notes:
+            if notation_elem.isNote:
+                if notation_elem.pitch.octave < lowest_octave:
+                    notation_elem.pitch.transpose(12, inPlace=True)
+                if notation_elem.pitch.octave > highest_octave:
+                    notation_elem.pitch.transpose(-12, inPlace=True)
+
         self._notes = notes
         self._string_representation = self.get_string_representation()
         self._transposition_table = ['']
@@ -135,7 +145,6 @@ class Motif:
     @staticmethod
     def transpose(motif, steps):
         """ Transpose motif up or down steps half-steps. Returns a transposed copy.
-            Also transposes the notes to a sensible range, i.e. they are not ridiculously high or low.
 
             :param motif: Motif that is transposed
             :type motif: Motif
@@ -145,29 +154,13 @@ class Motif:
             :return: A transposed copy of motif
             :rtype: Motif object. """
 
-        # Deepcopy the motif and get its notes to ensure the original motif is unaffected
-        notes = deepcopy(motif).notes
-        highest_octave = 0
-        lowest_octave = 10
+        # Deepcopy the notes to ensure the original motif is unaffected
+        notes = deepcopy(motif.notes)
+
         for notation_elem in notes:
             # Only notes can be transposed.
             if notation_elem.isNote:
                 notation_elem.pitch.transpose(steps, inPlace=True)
-                if notation_elem.pitch.octave < lowest_octave:
-                    lowest_octave = notation_elem.pitch.octave
-                if notation_elem.pitch.octave > highest_octave:
-                    highest_octave = notation_elem.pitch.octave
-
-        # Check that octaves are reasonable and transpose down or up an octave depending.
-        # Only transpose in one direction.
-        if highest_octave > 6:
-            for notation_elem in notes:
-                if notation_elem.isNote:
-                    notation_elem.pitch.transpose(-12, inPlace=True)
-        elif lowest_octave < 2:
-            for notation_elem in notes:
-                if notation_elem.isNote:
-                    notation_elem.pitch.transpose(12, inPlace=True)
 
         return Motif(notes)
 
@@ -180,8 +173,8 @@ class Motif:
             :return: A transposed copy of motif
             :rtype: Motif """
 
-        # Deepcopy the motif and get its notes to ensure the original motif is unaffected
-        notes = deepcopy(motif).notes
+        # Deepcopy the notes to ensure the original motif is unaffected
+        notes = deepcopy(motif.notes)
 
         # Select a random note
         for _ in range(0, len(notes)):
@@ -205,8 +198,8 @@ class Motif:
             :return: A variation of motif as a copy.
             :rtype: Motif """
 
-        # Deepcopy the motif and get its notes to ensure the original motif is unaffected
-        notes = deepcopy(motif).notes
+        # Deepcopy the notes to ensure the original motif is unaffected
+        notes = deepcopy(motif.notes)
         diminuation = random.choice([True, False])
 
         # Find shortest duration in motif in order to decide if it makes sense to diminuate the rhythm.
@@ -215,15 +208,17 @@ class Motif:
             if notation_elem.duration.quarterLength < shortest_duration:
                 shortest_duration = notation_elem.duration.quarterLength
 
-        # If the shortest duration is at least 1/16 then it is possible to diminuate the rhythm
-        can_diminuate = shortest_duration >= (1.0/16)
+        # If the shortest duration is longer than sixteenth note, 0.25 quarters, only then diminuate
+        can_diminuate = shortest_duration > 0.25
 
         if diminuation and can_diminuate:
             # Reduce the duration to half and append the rhythmically diminuated motif to itself.
             for note in notes:
                 note.duration.quarterLength /= 2
 
-            notes.extend(notes)
+            # Deepcopy to avoid having two pointers to the same note/rest in the list.
+            notes.extend(deepcopy(notes))
+
         else:
             # Invert the rhythm
             for i in range(0, floor(len(notes)/2)):

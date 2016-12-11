@@ -72,7 +72,7 @@ class MusicEnvironment(Environment):
 
     def get_latest_motifs(self, age):
         """ Get all the motifs that have been played recently. Get only slightly more motifs
-            than can be remembered by agent with maximum memory size.
+            than can be remembered by the agent with maximum memory size.
 
             :param age: The current number of simulation step.
             :type age: int
@@ -91,7 +91,10 @@ class MusicEnvironment(Environment):
 
     def agents_listen_and_evaluate(self, age):
         """ Agents listen to what has been played in the environment
-            and evaluate their own performance in regard to that. """
+            and evaluate their own performance in regard to that.
+
+            :param age: The step of the simulation.
+            :type age: int """
 
         latest_motifs = self.get_latest_motifs(age)
         for agent in self.get_agents(address=False):
