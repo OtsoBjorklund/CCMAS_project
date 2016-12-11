@@ -74,11 +74,7 @@ def parts_to_musicxml(parts, filename):
 
         # Insert part to score
         score.insert(0, part)
-    #take dirname from filename
-    directoryName = os.path.dirname(filename)
-    # if directory not exists, create new
-    if not os.path.exists(directoryName):
-       os.makedirs(directoryName)
+
     # Write score to file
     score.write('musicxml', filename)
 

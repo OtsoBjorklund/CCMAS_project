@@ -5,6 +5,7 @@
 from datetime import datetime
 
 import musicxmlio
+import os
 from creamas import Environment, Artifact
 
 
@@ -31,6 +32,7 @@ class MusicEnvironment(Environment):
 
     def save_improvisation(self, filename):
         """ Save the improvisation to MusicXML file.
+
             :param filename: The name of the output file.
             :type filename: str """
 
@@ -40,15 +42,17 @@ class MusicEnvironment(Environment):
         """ When the environment is destroyed this is called.
             Save the results of the simulation, i.e. the improvisation into file. """
 
-        # TODO: if output does not exist create it
-        folder = 'output'
+        output_dir = 'output'
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
         timestamp = '{:%Y%m%d_%H%M%S}'.format(datetime.now())
         # form = 20161203_162901
         filename = 'Improvisation_' + timestamp + '.xml'
-        path = folder + '/' + filename
+        path = output_dir + '/' + filename
         self.save_improvisation(path)
 
-    def get_musical_context(self, age, distance=5):
+    def get_musical_context(self, age, distance=3):
         """ Get all the motifs that all agents have played before age and after distance.
 
             :param age: The current number of simulation step.

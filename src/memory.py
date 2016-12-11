@@ -3,15 +3,23 @@
 
 import random
 
+
 class Memory():
-    """ The memory of the agents. Container class for Motifs. """
+    """ The memory of the agents. Container class for Motifs. Is iterable. """
 
     def __init__(self, size):
         self._motifs = []
         self._size = size
 
     def memorize(self, motif, replace_most_similar=True):
-        """ Add new motif to memory. If memory is full replace the most similar motif with the new one. """
+        """ Add new motif to memory. If memory is full replace the most similar motif with the new one.
+
+            :param motif: Motif to be added to memory.
+            :type motif: Motif
+            :param replace_most_similar: When memory is full if this is true the new motif replaces the most similar
+                motif in memory. If this is false, then replaces a random motif.
+            :type replace_most_similar: bool """
+
         if len(self._motifs) < self._size:
             self._motifs.append(motif)
         else:
@@ -25,12 +33,20 @@ class Memory():
             self._motifs[index] = motif
 
     def find_most_similar(self, m):
-        """ Find the motif from memory that is the most similar to m. """
+        """ Find the motif from memory that is the most similar to m.
+
+            :param m: The query motif
+            :type m: Motif """
+
         index = self.index_of_most_similar(m)
         return self._motifs[index]
 
     def find_least_similar(self, m):
-        """ Find the motif that is least similar to m """
+        """ Find the motif that is least similar to m.
+
+            :param m: The query motif
+            :type m: Motif """
+
         min_similarity = 1.0
         for motif in self._motifs:
             similarity = motif.similarity(m)
@@ -41,7 +57,10 @@ class Memory():
         return least_similar
 
     def index_of_most_similar(self, m):
-        """ Find the index of the motif in memory that is most similar to m. """
+        """ Find the index of the motif in memory that is most similar to m.
+
+            :param m: The query motif
+            :type m: Motif """
 
         max_similarity = 0.0
         index = 0
