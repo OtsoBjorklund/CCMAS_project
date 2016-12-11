@@ -1,0 +1,4 @@
+#!/bin/bash
+# Generate the required rst files and html for documentation
+sphinx-apidoc -f -o . "../src"
+make html
