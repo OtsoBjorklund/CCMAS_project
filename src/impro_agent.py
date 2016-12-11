@@ -106,10 +106,12 @@ class ImprovisingAgent(CreativeAgent):
 
     @property
     def name(self):
+        """ The name of the agent """
         return self._name
 
     @property
     def memory_capacity(self):
+        """ The maximum number of motifs the agent can remember from the environment. """
         return self._memory_of_situation.capacity
 
     def play_motif(self):
@@ -171,7 +173,7 @@ class ImprovisingAgent(CreativeAgent):
 
         # Update the agent's memory of the situation by choosing random motifs from the musical_context and
         # putting them into the memory.
-        num_motifs = len(self._memory_of_situation)
+        num_motifs = min(self.memory_capacity, len(musical_context))
         perceived_motifs = random.sample(musical_context, num_motifs)
         for motif in perceived_motifs:
             # The perceived motifs replace oldest motifs in the memory.
@@ -186,12 +188,14 @@ class ImprovisingAgent(CreativeAgent):
                 max_surprise = surprise
                 most_surprising = motif
 
-        # Memorize it as a random variation.
-        if most_surprising:
-            self._vocabulary.memorize(Motif.get_random_variation(most_surprising))
-
         # Evaluate how good the last motif was and update confidence level
         evaluation = self.evaluate(Artifact(self, obj=self._last_motif, domain='music'))
+
+        # Memorize the most surprising motif as a random variation if it is evaluated better than own last motif.
+        if most_surprising:
+            if self.evaluate(Artifact(self, obj=most_surprising, domain='music')) > evaluation:
+                self._vocabulary.memorize(Motif.get_random_variation(most_surprising))
+
         self._sum_of_evaluations += evaluation
         self._confidence = self._sum_of_evaluations / self._steps_acted
         # If the agents last motif was a rest, the agent did not play anything
