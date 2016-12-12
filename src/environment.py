@@ -38,7 +38,7 @@ class MusicEnvironment(Environment):
             :param filename: The name of the output file.
             :type filename: str """
 
-        musicxmlio.parts_to_musicxml(self._parts, filename)
+        musicxmlio.parts_to_musicxml_midi(self._parts, filename)
 
     def save_info(self, folder, *args, **kwargs):
         """ When the environment is destroyed this is called.
@@ -50,7 +50,7 @@ class MusicEnvironment(Environment):
 
         timestamp = '{:%Y%m%d_%H%M%S}'.format(datetime.now())
         # form = 20161203_162901
-        filename = 'Improvisation_' + timestamp + '.xml'
+        filename = 'Improvisation_' + timestamp
         path = output_dir + '/' + filename
         self.save_improvisation(path)
 

@@ -15,7 +15,7 @@ class Motif:
     def __init__(self, notes):
         # Put the notes into a sensible octave range
         lowest_octave = 1
-        highest_octave = 8
+        highest_octave = 7
         for notation_elem in notes:
             if notation_elem.isNote:
                 if notation_elem.pitch.octave < lowest_octave:

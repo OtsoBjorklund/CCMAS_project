@@ -33,9 +33,10 @@ class ImprovisingAgent(CreativeAgent):
             the agent is to play something that is opposite to what it perceices from the environment.
           :type pr_of_contrast: float
           :param conf_decline_factor: By what factor the confidence of the agent decreases when it stays silent.
+            The confidence is multiplied by this, should be in the range [0,9).
           :type conf_decline_factor: float
-          :param conf_th: By how much the estimated confidence of playing a motif must exceed the
-            current confidence level.
+          :param conf_th: By what factor estimated confidence of playing a motif must exceed the
+            current confidence level. Value between [0,1], preferably quite small.
           :type conf_th: float """
 
     def __init__(self, env, insp_set, motif_length, memory_size, name, pr_of_contrast=0.2,
@@ -144,11 +145,11 @@ class ImprovisingAgent(CreativeAgent):
 
         # Estimate what the future confidence level would be if the agent played the motif
         estimate_of_future_confidence = (self._sum_of_evaluations + best_evaluation) / (self._steps_acted + 1)
-        if estimate_of_future_confidence <= self._confidence + self._confidence_threshold:
+        if estimate_of_future_confidence <= self._confidence * (1 + self._confidence_threshold):
             # If playing the motif would not increase confidence enough, rest.
             motif_to_play = Motif.get_rest(self._motif_length)
 
-        # With probability of 0.15 the agent decides to play something contrasting instead.
+        # With probability of pr_of_contrast the agent decides to play something contrasting instead.
         if not motif_to_play.is_all_rests():
             play_contrasting = random.random()
             if play_contrasting <= self._pr_of_contrast:

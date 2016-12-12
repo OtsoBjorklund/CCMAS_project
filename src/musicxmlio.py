@@ -37,9 +37,9 @@ def read_musicxml_to_list(filepath):
     return notelist
 
 
-def parts_to_musicxml(parts, filename):
-    """ Write the parts dictionary into a MusicXML file with name filename.
-        Each part in the parts will be its own part in the MusicXML score.
+def parts_to_musicxml_midi(parts, filename):
+    """ Write the parts dictionary into a MusicXML file and MIDI file with name filename.
+        Each part in the parts will be its own part in the MusicXML score and its own channel in MIDI file.
 
         :param parts: The parts to be written in to the score.
         :type parts: Dictionary with strings as keys and lists of Motif objects as
@@ -75,8 +75,10 @@ def parts_to_musicxml(parts, filename):
         # Insert part to score
         score.insert(0, part)
 
-    # Write score to file
-    score.write('musicxml', filename)
+    # Write score to MusicXML file
+    score.write('musicxml', filename + '.xml')
+    # Write score to MIDI file
+    score.write('midi', filename + '.midi')
 
 
 def get_random_filename(path):
