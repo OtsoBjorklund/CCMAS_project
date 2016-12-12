@@ -206,8 +206,21 @@ class ImprovisingAgent(CreativeAgent):
 
     def surprisingness(self, motif):
         # TODO: Kari
-        return 0.5
-
+        returnValue = 0
+        memoryCapasity = self.memory_capacity
+        #check motifs confidence value from dictionary
+        for artic in self._vocabulary:
+            if(artic == motif):
+                returnValue = self._confidence
+        
+        if (returnValue < 1/memoryCapasity):
+            #if value is less than 1/n, chance its confidence value to 1 - value
+            returnValue = 1 - returnValue
+        else :
+            returnValue = 0
+        
+        return returnValue
+        
     def evaluate(self, artifact):
         """ Evaluate how good the motif was by considering how well it fit into what the agent
             remembers of other agent's playing and how surprising it was.
