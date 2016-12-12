@@ -14,7 +14,7 @@ class Motif:
 
     def __init__(self, notes):
         # Put the notes into a sensible octave range
-        lowest_octave = 1
+        lowest_octave = 2
         highest_octave = 7
         for notation_elem in notes:
             if notation_elem.isNote:
@@ -37,6 +37,7 @@ class Motif:
 
     @property
     def notes(self):
+        """ List of notes and rests in the motif. """
         return self._notes
 
     def __str__(self):

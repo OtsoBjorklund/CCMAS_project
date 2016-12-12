@@ -56,7 +56,8 @@ class Memory():
             :param m: The query motif
             :type m: Motif """
 
-        min_similarity = 1.0
+        # Similarity rating is at most 1.0 so start off with value 1.1
+        min_similarity = 1.1
         for entry in self._motifs:
             motif = entry[0]
             similarity = motif.similarity(m)
@@ -67,6 +68,7 @@ class Memory():
         return least_similar
 
     def index_of_oldest(self):
+        """ Find the motif with the smallest step, i.e. the one that is oldest. """
         if not self._motifs:
             return 0
 

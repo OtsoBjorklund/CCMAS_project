@@ -30,10 +30,10 @@ class ImprovisingAgent(CreativeAgent):
           :param name: The name of the agent.
           :type name: str
           :param pr_of_contrast: Probability that the agent decides to play something contrasting. This tells how ready
-            the agent is to play something that is opposite to what it perceices from the environment.
+            the agent is to play something that is opposite to what it perceives from the environment.
           :type pr_of_contrast: float
           :param conf_decline_factor: By what factor the confidence of the agent decreases when it stays silent.
-            The confidence is multiplied by this, should be in the range [0,9).
+            The confidence is multiplied by this when the agent stays silent, should be in the range [0,9).
           :type conf_decline_factor: float
           :param conf_th: By what factor estimated confidence of playing a motif must exceed the
             current confidence level. Value between [0,1], preferably quite small.
@@ -189,14 +189,16 @@ class ImprovisingAgent(CreativeAgent):
                 max_surprise = surprise
                 most_surprising = motif
 
-        # Evaluate how good the last motif was and update confidence level
+        # Evaluate how good the last own motif was.
         evaluation = self.evaluate(Artifact(self, obj=self._last_motif, domain='music'))
 
-        # Memorize the most surprising motif as a random variation if it is evaluated better than own last motif.
+        # Check that an at all surprising motif was found and memorize the most surprising motif
+        # as a random variation if it is evaluated better than own last motif.
         if most_surprising:
             if self.evaluate(Artifact(self, obj=most_surprising, domain='music')) > evaluation:
                 self._vocabulary.memorize(Motif.get_random_variation(most_surprising))
 
+        # Update the confidence level of the agent.
         self._sum_of_evaluations += evaluation
         self._confidence = self._sum_of_evaluations / self._steps_acted
         # If the agents last motif was a rest, the agent did not play anything
@@ -205,33 +207,26 @@ class ImprovisingAgent(CreativeAgent):
             self._confidence *= self._confidence_decline_factor
 
     def surprisingness(self, motif):
-        # TODO: Kari
-        returnValue = 0
-        memoryCapasity = self.memory_capacity
-        #check motifs confidence value from dictionary
-        for artic in self._vocabulary:
-            if(artic == motif):
-                returnValue = self._confidence
-        
-        if (returnValue < 1/memoryCapasity):
-            #if value is less than 1/n, chance its confidence value to 1 - value
-            returnValue = 1 - returnValue
-        else :
-            returnValue = 0
-        
-        return returnValue
+        """ Evaluate the surprisingness of motif by comparing how
+            different it is to the most similar motif the agent knows.
+
+            :param motif: The motif whose suprisingness is evaluated.
+            :type motif: Motif
+            :return: Rating in the range [0, 1] with 1 being most surprising.
+            :rtype: float """
+
+        most_sim = self._vocabulary.find_most_similar(motif)
+        return 1 - most_sim.similarity(motif)
         
     def evaluate(self, artifact):
         """ Evaluate how good the motif was by considering how well it fit into what the agent
-            remembers of other agent's playing and how surprising it was.
+            remembers of other agent's playing.
 
             :param artifact: Artifact object containing a motif.
             :type artifact: Artifact """
 
-        own_motif = artifact.obj
-        fit = own_motif.fit_into_context(self._memory_of_situation)
-        surprise = self.surprisingness(own_motif)
-        return (fit + surprise) / 2
+        motif = artifact.obj
+        return motif.fit_into_context(self._memory_of_situation)
 
     async def act(self):
         """ Play motif and add it to the environment. """
