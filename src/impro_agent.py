@@ -165,6 +165,7 @@ class ImprovisingAgent(CreativeAgent):
     def listen_to_others(self, musical_context, step):
         """ Update the agent's knowledge of the musical situation
             and evaluate how well the last played motif worked out.
+            Learn surprising motifs from the musical context.
             Update the confidence level of the agent.
 
             :param musical_context: Motifs recently played in the environment.

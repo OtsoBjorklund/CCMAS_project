@@ -47,6 +47,10 @@ class Motif:
     def get_string_representation(self):
         """ Create a transposition invariant string representation of motif.
             The representation ignores octaves and treats durations relatively.
+            Each pair of consecutive notes in the string is represented by the interval in half-steps
+            and the ration of the durations. For example the pair of notes C4(1/8) - D4(1/4) is represented by 12.0
+            where the interval is 1 and the ratio of durations is 2.0 as the second note is twice as long as the
+            first one. The first note of the motif is compared to the last note of the motif.
 
             :return: String of interval and duration numbers.
             :rtype: str """
@@ -121,6 +125,7 @@ class Motif:
 
     def is_all_rests(self):
         """ Check if the Motif is entirely composed of rests.
+
             :return: True if motif is all rests, False otherwise.
             :rtype: bool """
 
