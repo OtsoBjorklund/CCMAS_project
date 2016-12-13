@@ -41,6 +41,14 @@ class Memory():
 
             self._motifs[index] = (motif, step)
 
+    def get_random_motif(self):
+        """ Choose a random Motif from the memory.
+
+            :return: Randomly selected motif.
+            :rtype: Motif """
+        random_elem = random.choice(self._motifs)
+        return random_elem[0]
+
     def find_most_similar(self, m):
         """ Find the motif from memory that is the most similar to m.
 

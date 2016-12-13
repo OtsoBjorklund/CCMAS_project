@@ -26,7 +26,8 @@ how confident the agent is in its own playing. The agents only produce a motif i
 confidence, otherwise they produce a rest (silence). The confidence of the agent declines as it stays quiet, so the
 longer the agent stays quiet the more likely it is to find a motif to play from its vocabulary that would boost its
 confidence. The agents also try improving the motifs by making random variations of them. The agents can also
-randomly decide to do something contrary to the most fitting choice in order to keep the music lively.
+randomly decide to do something random or contrary to the most fitting choice in order to keep the music
+lively and avoid all agents converging to playing the same thing.
 
 After all agents have played their motifs on the step, they evaluate how well what they did actually fit into the
 context and update their confidence level. The agents also learn new motifs from the other agents by memorizing the
@@ -34,13 +35,19 @@ most surprising motifs from the context if they are evaluated better than what t
 no global evaluation of the entire improvisation, the agents only evaluate their own playing and the most surprising
 motifs played by the other agents.
 
+The agents have two different memories: one for the vocabulary and one for the motifs perceived from the environment.
+When the agents add motifs to their vocabulary, the new motif replaces the most similar one to keep the vocabulary
+diverse. When the agents memorize motifs from the environment, they replace the oldest motifs from their memory of
+the musical context.
+
 Implementation
 ----------------
 The system is implemented using python 3, creamas, and music21.
 The improvisation lasts a predetermined number of steps and the motif length is fixed and is the same for all agents.
 The result of the entire improvisation is output into a
 MusicXML and MIDI file that can then be viewed and played by many music notation and digital audio workstation
-(DAW) applications. All handling of symbolic music data is handled by the class Motif.
+(DAW) applications. All handling of symbolic music data is handled by the class Motif. All agents use same length
+motifs so that there is no need for any separate rhythmic synchronisation between the agents.
 
 The system is truly a multi-agent system: there is no global authority controlling the agent's decision making, and
 the communication between the agents is limited to perceiving only some of the motifs from the environment. The

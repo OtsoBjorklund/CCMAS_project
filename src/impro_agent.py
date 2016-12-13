@@ -120,6 +120,7 @@ class ImprovisingAgent(CreativeAgent):
             would be better. If the variation is better, memorize it and return it.
             Estimate if playing the motif would increase the agent's confidence level. If the motif is estimated to
             not increase the confidence level enough, the agent rests instead i.e. produces a motif that is all rests.
+            With probability pr_of_contrast the agent plays something contrary to the context or random.
 
             :return: Motif with best evaluation.
             :rtype: Motif """
@@ -149,11 +150,14 @@ class ImprovisingAgent(CreativeAgent):
             # If playing the motif would not increase confidence enough, rest.
             motif_to_play = Motif.get_rest(self._motif_length)
 
-        # With probability of pr_of_contrast the agent decides to play something contrasting instead.
-        if not motif_to_play.is_all_rests():
-            play_contrasting = random.random()
-            if play_contrasting <= self._pr_of_contrast:
+        # With probability of pr_of_contrast the agent decides to play something contrasting.
+        play_contrasting = random.random()
+        if play_contrasting <= self._pr_of_contrast:
+            if not motif_to_play.is_all_rests():
                 motif_to_play = self._vocabulary.find_least_similar(motif_to_play)
+            else:
+                # If there is no motif to contrast against, choose a random motif.
+                motif_to_play = self._vocabulary.get_random_motif()
 
         # Keep track of the last motif played
         self._last_motif = motif_to_play
