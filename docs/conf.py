@@ -54,8 +54,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'MACI'
-copyright = '2016, Otso Björklund, Cedric Rantanen, Kari Korpinen'
-author = 'Otso Björklund, Cedric Rantanen, Kari Korpinen'
+copyright = '2016, Otso Björklund'
+author = 'Otso Björklund'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -265,7 +265,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'MACI.tex', 'MACI Documentation',
-     'Otso Björklund, Cedric Rantanen, Kari Korpinen', 'manual'),
+     'Otso Björklund', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

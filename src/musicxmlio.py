@@ -1,5 +1,5 @@
-# MACI. Course project for Computational Creativity and Multi-Agent Systems. Fall 2016.
-# Otso Björklund, Kari Korpinen, Cedric Rantanen.
+# MACI.
+# Otso Björklund.
 #
 # Functions for handling MusicXML IO.
 

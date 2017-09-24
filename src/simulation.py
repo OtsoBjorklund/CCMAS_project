@@ -1,5 +1,5 @@
-# MACI. Course project for Computational Creativity and Multi-Agent Systems. Fall 2016.
-# Otso Björklund, Kari Korpinen, Cedric Rantanen.
+# Multi-Agent Collective Improvisation
+# Otso Björklund
 #
 # This is the file to execute if you want to run the simulation.
 
@@ -41,4 +41,4 @@ def run_simulation(num_steps):
 
 
 if __name__ == "__main__":
-    run_simulation(50)
+    run_simulation(5)
