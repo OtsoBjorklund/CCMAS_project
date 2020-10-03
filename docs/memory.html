@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>memory module &#8212; MACI 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-memory">
+<span id="memory-module"></span><h1>memory module<a class="headerlink" href="#module-memory" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="memory.Memory">
+<em class="property">class </em><code class="sig-prename descclassname">memory.</code><code class="sig-name descname">Memory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">capacity</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memory.html#Memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memory.Memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The memory of the agents. Container class for Motifs. Is iterable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>capacity</strong> (<em>int</em>) – The maximum number of motifs that can be remembered.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="memory.Memory.capacity">
+<em class="property">property </em><code class="sig-name descname">capacity</code><a class="headerlink" href="#memory.Memory.capacity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="memory.Memory.find_least_similar">
+<code class="sig-name descname">find_least_similar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memory.html#Memory.find_least_similar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memory.Memory.find_least_similar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the motif that is least similar to m.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> (<a class="reference internal" href="motif.html#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – The query motif</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="memory.Memory.find_most_similar">
+<code class="sig-name descname">find_most_similar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memory.html#Memory.find_most_similar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memory.Memory.find_most_similar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the motif from memory that is the most similar to m.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> (<a class="reference internal" href="motif.html#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – The query motif</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="memory.Memory.get_random_motif">
+<code class="sig-name descname">get_random_motif</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memory.html#Memory.get_random_motif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memory.Memory.get_random_motif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose a random Motif from the memory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Randomly selected motif.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="motif.html#motif.Motif" title="motif.Motif">Motif</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="memory.Memory.index_of_most_similar">
+<code class="sig-name descname">index_of_most_similar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memory.html#Memory.index_of_most_similar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memory.Memory.index_of_most_similar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the index of the motif in memory that is most similar to m.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> (<a class="reference internal" href="motif.html#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – The query motif</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="memory.Memory.index_of_oldest">
+<code class="sig-name descname">index_of_oldest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memory.html#Memory.index_of_oldest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memory.Memory.index_of_oldest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the motif with the smallest step, i.e. the one that is oldest.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="memory.Memory.memorize">
+<code class="sig-name descname">memorize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">motif</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">replace_most_similar</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memory.html#Memory.memorize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memory.Memory.memorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new motif to memory. If memory is full replace the most similar or oldest motif with the new one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>motif</strong> (<a class="reference internal" href="motif.html#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – Motif to be added to memory.</p></li>
+<li><p><strong>step</strong> (<em>int</em>) – The step of simulation in which the motif was added.</p></li>
+<li><p><strong>replace_most_similar</strong> (<em>bool</em>) – When memory is full, if this is true the new motif replaces the most similar
+motif in memory. If this is false, then replaces the oldest motif: the one with smallest step.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">MACI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Otso Björklund.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/memory.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

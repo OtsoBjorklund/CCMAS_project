@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multi-Agent Collective Improvisation (MACI) &#8212; MACI 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="multi-agent-collective-improvisation-maci">
+<h1>Multi-Agent Collective Improvisation (MACI)<a class="headerlink" href="#multi-agent-collective-improvisation-maci" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>The purpose of the system is to model collective musical improvisation, or so-called “free improvisation”. The agents
+use a commonly used improvisation technique called motific improvisation: their playing is based on the use motifs.
+In this case the motifs are just short segments of music. Musical data is handled entirely in symbolic form in the
+system.
+The focus of the system is on the interaction of the agents.</p>
+</div>
+<div class="section" id="the-process-of-improvisation">
+<h2>The Process of Improvisation<a class="headerlink" href="#the-process-of-improvisation" title="Permalink to this headline">¶</a></h2>
+<p>Before the simulation (the improvisation), begins, the agents learn vocabularies of motifs from a set of MusicXML
+files. The selection of files from which an agent learns its motifs forms the inspirational set of that agent. During
+the improvisation, on each step the agents select a motif to play from their vocabularies.
+The choice is based on what the agent would consider to fit best into the musical context of the environment. The
+agents can perceive and remember a limited number of motifs from the environment. These motifs form the musical
+context, or framing, for the evaluation of fit. The agents have a property called confidence level which describes
+how confident the agent is in its own playing. The agents only produce a motif if they consider it to boost their
+confidence, otherwise they produce a rest (silence). The confidence of the agent declines as it stays quiet, so the
+longer the agent stays quiet the more likely it is to find a motif to play from its vocabulary that would boost its
+confidence. The agents also try improving the motifs by making random variations of them. The agents can also
+randomly decide to do something random or contrary to the most fitting choice in order to keep the music
+lively and avoid all agents converging to playing the same thing.</p>
+<p>After all agents have played their motifs on the step, they evaluate how well what they did actually fit into the
+context and update their confidence level. The agents also learn new motifs from the other agents by memorizing the
+most surprising motifs from the context if they are evaluated better than what the agent itself last played. There is
+no global evaluation of the entire improvisation, the agents only evaluate their own playing and the most surprising
+motifs played by the other agents.</p>
+<p>The agents have two different memories: one for the vocabulary and one for the motifs perceived from the environment.
+When the agents add motifs to their vocabulary, the new motif replaces the most similar one to keep the vocabulary
+diverse. When the agents memorize motifs from the environment, they replace the oldest motifs from their memory of
+the musical context.</p>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>The system is implemented using python 3, creamas, and music21.
+The improvisation lasts a predetermined number of steps and the motif length is fixed and is the same for all agents.
+The result of the entire improvisation is output into a
+MusicXML and MIDI file that can then be viewed and played by many music notation and digital audio workstation
+(DAW) applications. All handling of symbolic music data is handled by the class Motif. All agents use same length
+motifs so that there is no need for any separate rhythmic synchronisation between the agents.</p>
+<p>The system is truly a multi-agent system: there is no global authority controlling the agent’s decision making, and
+the communication between the agents is limited to perceiving only some of the motifs from the environment. The
+communication is also limited to playing and listening as the only information the agents share with each other are
+the motifs they play.
+The downside of this is that there is no automatic evaluation of the entire output of the system, therefore making
+manual evaluation by a human necessary.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Installing the system requires downloading the source files and installing the requirements.
+The requirements for the system are specified in the file requirements.txt.
+The requirements can be installed using pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>It is recommended to create a virtual environment and install the requirements in the virtual environment.
+music21 may produce warnings about some libraries
+when the simulation is run, but the system does not use any of the functions of music21 that require additional
+libraries so the warnings can be ignored.</p>
+</div>
+<div class="section" id="running-the-system">
+<h2>Running the system<a class="headerlink" href="#running-the-system" title="Permalink to this headline">¶</a></h2>
+<p>The system is run by (activating virtual env) moving into the directory src and executing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">simulation</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>The system does not take any arguments. The output is saved into the directory src/output.
+Changing the configuration of the system requires changing the file simulation.py. The number of steps, length of
+motif, and the attributes of the agents can be adjusted to produce different outcomes. These variables are described
+in more detail in the documentation for the modules.</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">MACI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Otso Björklund.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

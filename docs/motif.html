@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>motif module &#8212; MACI 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-motif">
+<span id="motif-module"></span><h1>motif module<a class="headerlink" href="#module-motif" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="motif.Motif">
+<em class="property">class </em><code class="sig-prename descclassname">motif.</code><code class="sig-name descname">Motif</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">notes</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class that encapsulates a list of music21.note.Note and music21.note.Rest objects as a motif.</p>
+<p>The agents handle all of their playing by using Motif objects.</p>
+<dl class="py method">
+<dt id="motif.Motif.analyse_key">
+<em class="property">static </em><code class="sig-name descname">analyse_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">motifs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.analyse_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.analyse_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyse the key of motifs using music21 analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>motifs</strong> (<em>iterable.</em>) – Iterable collection of motifs.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>key of motifs. None if there are no notes in the motif.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>music21.key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.fit_into_context">
+<code class="sig-name descname">fit_into_context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.fit_into_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.fit_into_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>How well the motif fits into a musical context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>context</strong> (<em>A list of motifs.</em>) – The context against which the fit of this motif is compared.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A rating in the range [0, 1] with 0 being a very bad fit and 1 being a very good fit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.get_random_rhythmic_variation">
+<em class="property">static </em><code class="sig-name descname">get_random_rhythmic_variation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">motif</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.get_random_rhythmic_variation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.get_random_rhythmic_variation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a random rhythmic variation of the motif. The motif can be
+-either diminuated rhythmically: every duration is halved and the motif is appended to itself, or
+-reversed in rhythm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>motif</strong> (<a class="reference internal" href="#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – Motif used for creating the variation.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A variation of motif as a copy.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#motif.Motif" title="motif.Motif">Motif</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.get_random_variation">
+<em class="property">static </em><code class="sig-name descname">get_random_variation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">motif</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.get_random_variation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.get_random_variation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a random variation of motif (as copy). The variation is either a transposition
+of a random note or a rhythmic variation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>motif</strong> (<a class="reference internal" href="#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – The motif used for transformation.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Varied copy of motif.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#motif.Motif" title="motif.Motif">Motif</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.get_rest">
+<em class="property">static </em><code class="sig-name descname">get_rest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">length_quarters</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.get_rest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.get_rest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a rest of length_quarters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>length_quarters</strong> (<em>Float.</em>) – Length of rest in quarter notes.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rest of length_quarters.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#motif.Motif" title="motif.Motif">Motif</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.get_string_representation">
+<code class="sig-name descname">get_string_representation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.get_string_representation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.get_string_representation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a transposition invariant string representation of motif.
+The representation ignores octaves and treats durations relatively.
+Each pair of consecutive notes in the string is represented by the interval in half-steps
+and the ration of the durations. For example the pair of notes C4(1/8) - D4(1/4) is represented by 22.00
+where the interval is 2 and the ratio of durations is 2.00 as the second note is twice as long as the
+first one. The ratio is limited to 2 decimal places to avoid the ratio part being extremely long. The
+first note of the motif is compared to the last note of the motif.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>String of interval and duration numbers.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.is_all_rests">
+<code class="sig-name descname">is_all_rests</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.is_all_rests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.is_all_rests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the Motif is entirely composed of rests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if motif is all rests, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.levenshtein">
+<em class="property">static </em><code class="sig-name descname">levenshtein</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">t</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.levenshtein"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.levenshtein" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the edit distance between two strings.
+From Wikipedia article; Iterative with two matrix rows.
+Copied from course material.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<em>str</em>) – String to be compared.</p></li>
+<li><p><strong>t</strong> (<em>str</em>) – String to be compared.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.notes">
+<em class="property">property </em><code class="sig-name descname">notes</code><a class="headerlink" href="#motif.Motif.notes" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of notes and rests in the motif.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.similarity">
+<code class="sig-name descname">similarity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the similarity of this motif to other using Levenshtein distance of string representations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<em>Motif object.</em>) – The motif that this motif is compared to.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Similarity measurement in range [0,1] where 0 is not at all similar and 1 is exact match.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.transpose">
+<em class="property">static </em><code class="sig-name descname">transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">motif</span></em>, <em class="sig-param"><span class="n">steps</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transpose motif up or down steps half-steps. Returns a transposed copy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>motif</strong> (<a class="reference internal" href="#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – Motif that is transposed</p></li>
+<li><p><strong>steps</strong> (<em>Integer.</em>) – Number of steps to be transposed. Positive values transpose up and
+negative values transpose down.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A transposed copy of motif</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Motif object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.transpose_random_note">
+<em class="property">static </em><code class="sig-name descname">transpose_random_note</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">motif</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.transpose_random_note"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.transpose_random_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transposes a random note of the motif. Returns a copy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>motif</strong> (<a class="reference internal" href="#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – Motif whose note is transposed</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A transposed copy of motif</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#motif.Motif" title="motif.Motif">Motif</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.transpose_to_key">
+<em class="property">static </em><code class="sig-name descname">transpose_to_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">motif</span></em>, <em class="sig-param"><span class="n">original_key</span></em>, <em class="sig-param"><span class="n">target_key</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.transpose_to_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.transpose_to_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transpose motif from original_key to target_key.
+Computation is performed using the number of sharps in the key signature.
+If the key signature contains 2 sharps for example, the tonic of that key is 2 perfect fifths higher
+than the pitch C. This transposition can be reduced to within an octave by computing the required
+transposition in half-steps and taking mod 12.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>motif</strong> (<a class="reference internal" href="#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – Motif to be transposed.</p></li>
+<li><p><strong>original_key</strong> (<em>music21.key</em>) – The original key of the motif.</p></li>
+<li><p><strong>target_key</strong> (<em>music21.key</em>) – The target key for the motif.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="motif.Motif.transpose_to_key_of_context">
+<em class="property">static </em><code class="sig-name descname">transpose_to_key_of_context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">motif</span></em>, <em class="sig-param"><span class="n">context</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/motif.html#Motif.transpose_to_key_of_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#motif.Motif.transpose_to_key_of_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of motif transposed to the key of context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>motif</strong> (<a class="reference internal" href="#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – Motif to be transposed.</p></li>
+<li><p><strong>context</strong> (<em>iterable</em>) – Iterable collection of motifs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Transposed copy of motif.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#motif.Motif" title="motif.Motif">Motif</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">MACI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Otso Björklund.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/motif.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

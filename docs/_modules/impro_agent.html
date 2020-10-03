@@ -1,126 +1,300 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>impro_agent &#8212; MACI 0.1 documentation</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="MACI 0.1 documentation" href="../index.html" />
-    <link rel="up" title="Module code" href="index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for impro_agent</h1><div class="highlight"><pre>
-<span></span><span class="c1"># MACI. Course project for Computational Creativity and Multi-Agent Systems. Fall 2016.</span>
+<span></span><span class="c1"># MACI.</span>
 <span class="c1"># Otso Björklund.</span>
 
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">floor</span>
+<span class="kn">from</span> <span class="nn">memory</span> <span class="kn">import</span> <span class="n">Memory</span>
+<span class="kn">from</span> <span class="nn">creamas</span> <span class="kn">import</span> <span class="n">CreativeAgent</span><span class="p">,</span> <span class="n">Artifact</span>
+<span class="kn">from</span> <span class="nn">motif</span> <span class="kn">import</span> <span class="n">Motif</span>
 <span class="kn">import</span> <span class="nn">random</span>
-
-<span class="kn">from</span> <span class="nn">creamas</span> <span class="k">import</span> <span class="n">CreativeAgent</span><span class="p">,</span> <span class="n">Artifact</span>
-<span class="kn">from</span> <span class="nn">motif</span> <span class="k">import</span> <span class="n">Motif</span>
-
 <span class="kn">import</span> <span class="nn">musicxmlio</span>
 
 
 <div class="viewcode-block" id="ImprovisingAgent"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent">[docs]</a><span class="k">class</span> <span class="nc">ImprovisingAgent</span><span class="p">(</span><span class="n">CreativeAgent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Agent class that improvises music based on motifs.</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+<span class="sd">        The agent has a fixed size vocabulary that it learns from files selected randomly from</span>
+<span class="sd">        the directories specified by inspiring set. The agent plays motifs by selecting them from its vocabulary</span>
+<span class="sd">        and making variations of them. The agent can also learn new motifs from the environment.</span>
+
+<span class="sd">        The agent evaluates its own performance using the variable confidence which is the average of all evaluations</span>
+<span class="sd">        the agent has made of its own playing. The agents play motifs only if they think that it would improve their</span>
+<span class="sd">        confidence level.</span>
+
+<span class="sd">          :param env: The environment that the ImprovisingAgent acts in.</span>
+<span class="sd">          :type env: Environment</span>
+<span class="sd">          :param insp_set: The inspiring set from which the agent learns its vocabulary.</span>
+<span class="sd">            Dictionary of directories and integers, dir:n, meaning select n motifs from a file randomly selected from dir.</span>
+<span class="sd">          :type insp_set: dict</span>
+<span class="sd">          :param motif_length: The length of the motifs the agent uses in quarter note lengths.</span>
+<span class="sd">          :type motif_length: float</span>
+<span class="sd">          :param name: The name of the agent.</span>
+<span class="sd">          :type name: str</span>
+<span class="sd">          :param pr_of_contrast: Probability that the agent decides to play something contrasting. This tells how ready</span>
+<span class="sd">            the agent is to play something that is opposite to what it perceives from the environment.</span>
+<span class="sd">          :type pr_of_contrast: float</span>
+<span class="sd">          :param conf_decline_factor: By what factor the confidence of the agent decreases when it stays silent.</span>
+<span class="sd">            The confidence is multiplied by this when the agent stays silent, should be in the range [0,9).</span>
+<span class="sd">          :type conf_decline_factor: float</span>
+<span class="sd">          :param conf_th: By what factor estimated confidence of playing a motif must exceed the</span>
+<span class="sd">            current confidence level. Value between [0,1], preferably quite small.</span>
+<span class="sd">          :type conf_th: float &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">insp_set</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">memory_size</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pr_of_contrast</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+                 <span class="n">conf_decline_factor</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">conf_th</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_motif_length</span> <span class="o">=</span> <span class="n">motif_length</span>
-        <span class="c1"># Todo: vocabulary should be a Memory object</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_vocabulary</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">)</span>
+
+        <span class="c1"># The vocabulary that the agent learns from the inspiring set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_vocabulary</span><span class="p">(</span><span class="n">insp_set</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">)</span>
+
         <span class="c1"># What the agent remembers of other agents playing</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span> <span class="o">=</span> <span class="n">Memory</span><span class="p">(</span><span class="n">memory_size</span><span class="p">)</span>
 
-        <span class="c1"># The overall evaluation of the agent by itself</span>
+        <span class="c1"># These are used to evaluate the agents idea of its own playing and confidence.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sum_of_evaluations</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_motifs_played</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_overall_performance</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c1"># Begin from 1 to avoid dividing by zero.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_steps_acted</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># Start with a random level of confidence.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_confidence</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ImprovisingAgent.create_vocabulary"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.create_vocabulary">[docs]</a>    <span class="k">def</span> <span class="nf">create_vocabulary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">):</span>
-        <span class="c1"># Todo: Enable learning from multiple files.</span>
-        <span class="k">return</span> <span class="n">musicxmlio</span><span class="o">.</span><span class="n">select_random_motifs</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">)</span></div>
+        <span class="c1"># The previous motif that the agent played.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_motif</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pr_of_contrast</span> <span class="o">=</span> <span class="n">pr_of_contrast</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_confidence_decline_factor</span> <span class="o">=</span> <span class="n">conf_decline_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_confidence_threshold</span> <span class="o">=</span> <span class="n">conf_th</span>
+
+<div class="viewcode-block" id="ImprovisingAgent.create_vocabulary"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.create_vocabulary">[docs]</a>    <span class="k">def</span> <span class="nf">create_vocabulary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">insp_set</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Chooses random motifs of length motif_length from randomly selected files</span>
+<span class="sd">            from directories defined in insp_set.</span>
+<span class="sd">            Used for creating the agent&#39;s vocabulary.</span>
+
+<span class="sd">            :param insp_set: How many motifs to pick randomly from a randomly selected file in a directory.</span>
+<span class="sd">                The keys are directory names and the values are the numbers of motifs.</span>
+<span class="sd">            :type insp_set: dict</span>
+<span class="sd">            :param motif_length: Length of motifs in quarter notes.</span>
+<span class="sd">            :type motif_length: float</span>
+<span class="sd">            :return: The vocabulary created from the inspiring set.</span>
+<span class="sd">            :rtype: Memory &quot;&quot;&quot;</span>
+
+        <span class="c1"># Dictionary of how many motifs to be selected from each file.</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># Total number of motifs</span>
+        <span class="n">num_motifs</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Get random files from the directories specified by insp_set</span>
+        <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">insp_set</span><span class="p">:</span>
+            <span class="n">motifs_from_file</span> <span class="o">=</span> <span class="n">insp_set</span><span class="p">[</span><span class="n">directory</span><span class="p">]</span>
+            <span class="n">num_motifs</span> <span class="o">+=</span> <span class="n">motifs_from_file</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">musicxmlio</span><span class="o">.</span><span class="n">get_random_filename</span><span class="p">(</span><span class="s1">&#39;inspirational_sets/&#39;</span> <span class="o">+</span> <span class="n">directory</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+            <span class="n">files</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">motifs_from_file</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Inspirational set for&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
+
+        <span class="n">random_motifs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">motifs_from_file</span> <span class="o">=</span> <span class="n">musicxmlio</span><span class="o">.</span><span class="n">select_random_motifs</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">files</span><span class="p">[</span><span class="n">filename</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">motifs_from_file</span><span class="p">:</span>
+                <span class="n">random_motifs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+        <span class="c1"># Create memory and memorize motifs.</span>
+        <span class="n">memory</span> <span class="o">=</span> <span class="n">Memory</span><span class="p">(</span><span class="n">num_motifs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">random_motifs</span><span class="p">:</span>
+            <span class="n">memory</span><span class="o">.</span><span class="n">memorize</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">memory</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The name of the agent &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">memory_capacity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The maximum number of motifs the agent can remember from the environment. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span><span class="o">.</span><span class="n">capacity</span>
+
 <div class="viewcode-block" id="ImprovisingAgent.play_motif"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.play_motif">[docs]</a>    <span class="k">def</span> <span class="nf">play_motif</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Find motif with the best evaluation &quot;&quot;&quot;</span>
-        <span class="n">best_motif</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot; Find motif with the best evaluation from the agents vocabulary. Create a variation of the motif and see if it</span>
+<span class="sd">            would be better. If the variation is better, memorize it and return it.</span>
+<span class="sd">            Estimate if playing the motif would increase the agent&#39;s confidence level. If the motif is estimated to</span>
+<span class="sd">            not increase the confidence level enough, the agent rests instead i.e. produces a motif that is all rests.</span>
+<span class="sd">            With probability pr_of_contrast the agent plays something contrary to the context or random.</span>
+
+<span class="sd">            :return: Motif with best evaluation.</span>
+<span class="sd">            :rtype: Motif &quot;&quot;&quot;</span>
+
+        <span class="n">motif_to_play</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">best_evaluation</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Find motif with best evaluation from vocabulary</span>
         <span class="k">for</span> <span class="n">motif</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span><span class="p">:</span>
             <span class="n">evaluation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">motif</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s1">&#39;music&#39;</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">evaluation</span> <span class="o">&gt;</span> <span class="n">best_evaluation</span><span class="p">:</span>
-                <span class="n">best_motif</span> <span class="o">=</span> <span class="n">motif</span>
+                <span class="n">motif_to_play</span> <span class="o">=</span> <span class="n">motif</span>
                 <span class="n">best_evaluation</span> <span class="o">=</span> <span class="n">evaluation</span>
 
-        <span class="c1"># Todo: Try variations and improving the motif using them</span>
+        <span class="c1"># Get a random variation of the motif and see if it would be better than the original.</span>
+        <span class="n">variation</span> <span class="o">=</span> <span class="n">Motif</span><span class="o">.</span><span class="n">get_random_variation</span><span class="p">(</span><span class="n">motif_to_play</span><span class="p">)</span>
+        <span class="c1"># If the variation is at least as good as the found best motif use it instead and memorize it.</span>
+        <span class="n">evaluation_of_variation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">variation</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s1">&#39;music&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">evaluation_of_variation</span> <span class="o">&gt;=</span> <span class="n">best_evaluation</span><span class="p">:</span>
+            <span class="n">motif_to_play</span> <span class="o">=</span> <span class="n">variation</span>
+            <span class="n">best_evaluation</span> <span class="o">=</span> <span class="n">evaluation_of_variation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span><span class="o">.</span><span class="n">memorize</span><span class="p">(</span><span class="n">motif_to_play</span><span class="p">)</span>
 
-        <span class="c1"># Todo: improve the evaluation of the overall performance</span>
-        <span class="n">overall_performance</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sum_of_evaluations</span> <span class="o">+</span> <span class="n">best_evaluation</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motifs_played</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">overall_performance</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overall_performance</span> <span class="o">-</span> <span class="mf">0.01</span><span class="p">:</span>
-            <span class="n">best_motif</span> <span class="o">=</span> <span class="n">Motif</span><span class="o">.</span><span class="n">get_rest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motif_length</span><span class="p">)</span>
+        <span class="c1"># Estimate what the future confidence level would be if the agent played the motif</span>
+        <span class="n">estimate_of_future_confidence</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sum_of_evaluations</span> <span class="o">+</span> <span class="n">best_evaluation</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_steps_acted</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">estimate_of_future_confidence</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confidence</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confidence_threshold</span><span class="p">):</span>
+            <span class="c1"># If playing the motif would not increase confidence enough, rest.</span>
+            <span class="n">motif_to_play</span> <span class="o">=</span> <span class="n">Motif</span><span class="o">.</span><span class="n">get_rest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motif_length</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_overall_performance</span> <span class="o">=</span> <span class="n">overall_performance</span>
+        <span class="c1"># With probability of pr_of_contrast the agent decides to play something contrasting.</span>
+        <span class="n">play_contrasting</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">play_contrasting</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pr_of_contrast</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">motif_to_play</span><span class="o">.</span><span class="n">is_all_rests</span><span class="p">():</span>
+                <span class="n">motif_to_play</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span><span class="o">.</span><span class="n">find_least_similar</span><span class="p">(</span><span class="n">motif_to_play</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If there is no motif to contrast against, choose a random motif.</span>
+                <span class="n">motif_to_play</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span><span class="o">.</span><span class="n">get_random_motif</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">best_motif</span></div>
+        <span class="c1"># Keep track of the last motif played</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_motif</span> <span class="o">=</span> <span class="n">motif_to_play</span>
 
-<div class="viewcode-block" id="ImprovisingAgent.listen_to_others"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.listen_to_others">[docs]</a>    <span class="k">def</span> <span class="nf">listen_to_others</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">musical_context</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Update the agent&#39;s knowledge of the musical situation. &quot;&quot;&quot;</span>
-        <span class="c1"># Todo: come up with a more sensible way of handling the knowledge of musical context</span>
-        <span class="n">num_motifs</span> <span class="o">=</span> <span class="mi">3</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">musical_context</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">)</span></div>
+        <span class="c1"># Transpose the best_motif based on key estimates.</span>
+        <span class="c1"># The motifs are handled in a key invariant way so memorizing the transposed motif is unnecessary.</span>
+        <span class="k">return</span> <span class="n">Motif</span><span class="o">.</span><span class="n">transpose_to_key_of_context</span><span class="p">(</span><span class="n">motif_to_play</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="ImprovisingAgent.listen_to_others"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.listen_to_others">[docs]</a>    <span class="k">def</span> <span class="nf">listen_to_others</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">musical_context</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update the agent&#39;s knowledge of the musical situation</span>
+<span class="sd">            and evaluate how well the last played motif worked out.</span>
+<span class="sd">            Learn surprising motifs from the musical context.</span>
+<span class="sd">            Update the confidence level of the agent.</span>
+
+<span class="sd">            :param musical_context: Motifs recently played in the environment.</span>
+<span class="sd">            :type musical_context: list</span>
+<span class="sd">            :param step: The step of the simulation.</span>
+<span class="sd">            :type step: int &quot;&quot;&quot;</span>
+
+        <span class="c1"># Update the agent&#39;s memory of the situation by choosing random motifs from the musical_context and</span>
+        <span class="c1"># putting them into the memory.</span>
+        <span class="n">num_motifs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memory_capacity</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">musical_context</span><span class="p">))</span>
+        <span class="n">perceived_motifs</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">musical_context</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">motif</span> <span class="ow">in</span> <span class="n">perceived_motifs</span><span class="p">:</span>
+            <span class="c1"># The perceived motifs replace oldest motifs in the memory.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span><span class="o">.</span><span class="n">memorize</span><span class="p">(</span><span class="n">motif</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">replace_most_similar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Find most surprising motif from the motifs perceived from environment</span>
+        <span class="n">most_surprising</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">max_surprise</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">motif</span> <span class="ow">in</span> <span class="n">perceived_motifs</span><span class="p">:</span>
+            <span class="n">surprise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surprisingness</span><span class="p">(</span><span class="n">motif</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">surprise</span> <span class="o">&gt;</span> <span class="n">max_surprise</span><span class="p">:</span>
+                <span class="n">max_surprise</span> <span class="o">=</span> <span class="n">surprise</span>
+                <span class="n">most_surprising</span> <span class="o">=</span> <span class="n">motif</span>
+
+        <span class="c1"># Evaluate how good the last own motif was.</span>
+        <span class="n">evaluation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_motif</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s1">&#39;music&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Check that an at all surprising motif was found and memorize the most surprising motif</span>
+        <span class="c1"># as a random variation if it is evaluated better than own last motif.</span>
+        <span class="k">if</span> <span class="n">most_surprising</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">most_surprising</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s1">&#39;music&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">evaluation</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span><span class="o">.</span><span class="n">memorize</span><span class="p">(</span><span class="n">Motif</span><span class="o">.</span><span class="n">get_random_variation</span><span class="p">(</span><span class="n">most_surprising</span><span class="p">))</span>
+
+        <span class="c1"># Update the confidence level of the agent.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sum_of_evaluations</span> <span class="o">+=</span> <span class="n">evaluation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_confidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum_of_evaluations</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_steps_acted</span>
+        <span class="c1"># If the agents last motif was a rest, the agent did not play anything</span>
+        <span class="c1"># and the confidence level decreases even more.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_motif</span><span class="o">.</span><span class="n">is_all_rests</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_confidence</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confidence_decline_factor</span></div>
+
+<div class="viewcode-block" id="ImprovisingAgent.surprisingness"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.surprisingness">[docs]</a>    <span class="k">def</span> <span class="nf">surprisingness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">motif</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluate the surprisingness of motif by comparing how</span>
+<span class="sd">            different it is to the most similar motif the agent knows.</span>
+
+<span class="sd">            :param motif: The motif whose suprisingness is evaluated.</span>
+<span class="sd">            :type motif: Motif</span>
+<span class="sd">            :return: Rating in the range [0, 1] with 1 being most surprising.</span>
+<span class="sd">            :rtype: float &quot;&quot;&quot;</span>
+
+        <span class="n">most_sim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span><span class="o">.</span><span class="n">find_most_similar</span><span class="p">(</span><span class="n">motif</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">most_sim</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">motif</span><span class="p">)</span></div>
+        
 <div class="viewcode-block" id="ImprovisingAgent.evaluate"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifact</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Evaluate how good the previously played motif was when compared to what others played.  &quot;&quot;&quot;</span>
-        <span class="n">own_motif</span> <span class="o">=</span> <span class="n">artifact</span><span class="o">.</span><span class="n">obj</span>
-        <span class="n">fit</span> <span class="o">=</span> <span class="n">own_motif</span><span class="o">.</span><span class="n">fit_into_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">fit</span></div>
+        <span class="sd">&quot;&quot;&quot; Evaluate how good the motif was by considering how well it fit into what the agent</span>
+<span class="sd">            remembers of other agent&#39;s playing.</span>
+
+<span class="sd">            :param artifact: Artifact object containing a motif.</span>
+<span class="sd">            :type artifact: Artifact &quot;&quot;&quot;</span>
+
+        <span class="n">motif</span> <span class="o">=</span> <span class="n">artifact</span><span class="o">.</span><span class="n">obj</span>
+        <span class="k">return</span> <span class="n">motif</span><span class="o">.</span><span class="n">fit_into_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ImprovisingAgent.act"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.act">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Writing concurrently to the dictionary should be ok as all agents write to different keys...</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_music_to_part</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">play_motif</span><span class="p">())</span></div></div>
+        <span class="sd">&quot;&quot;&quot; Play motif and add it to the environment. &quot;&quot;&quot;</span>
+
+        <span class="n">motif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">play_motif</span><span class="p">()</span>
+        <span class="c1"># Writing concurrently to the dictionary should be ok as all agents write to different keys.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_music_to_part</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">motif</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_steps_acted</span> <span class="o">+=</span> <span class="mi">1</span></div></div>
+
 </pre></div>
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">MACI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
@@ -130,15 +304,23 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -147,8 +329,8 @@
       &copy;2016, Otso Björklund.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

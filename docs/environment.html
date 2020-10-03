@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>environment module &#8212; MACI 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-environment">
+<span id="environment-module"></span><h1>environment module<a class="headerlink" href="#module-environment" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="environment.MusicEnvironment">
+<em class="property">class </em><code class="sig-prename descclassname">environment.</code><code class="sig-name descname">MusicEnvironment</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/environment.html#MusicEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#environment.MusicEnvironment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">creamas.core.environment.Environment</span></code></p>
+<p>The environment that the agents play in.
+Keeps track of everything that the agents have played and outputs it at the end into a MusicXML file.</p>
+<dl class="py method">
+<dt id="environment.MusicEnvironment.add_music_to_part">
+<code class="sig-name descname">add_music_to_part</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">part_name</span></em>, <em class="sig-param"><span class="n">motif</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/environment.html#MusicEnvironment.add_music_to_part"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#environment.MusicEnvironment.add_music_to_part" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add motif to the parts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>part_name</strong> (<em>str</em>) – Name of the part that the motif is added to.</p></li>
+<li><p><strong>motif</strong> (<a class="reference internal" href="motif.html#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – The motif that is added to part.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="environment.MusicEnvironment.agents_listen_and_evaluate">
+<code class="sig-name descname">agents_listen_and_evaluate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">age</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/environment.html#MusicEnvironment.agents_listen_and_evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#environment.MusicEnvironment.agents_listen_and_evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Agents listen to what has been played in the environment
+and evaluate their own performance in regard to that.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>age</strong> (<em>int</em>) – The step of the simulation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="environment.MusicEnvironment.get_latest_motifs">
+<code class="sig-name descname">get_latest_motifs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">age</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/environment.html#MusicEnvironment.get_latest_motifs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#environment.MusicEnvironment.get_latest_motifs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the motifs that have been played recently. Get only slightly more motifs
+than can be remembered by the agent with maximum memory size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>age</strong> (<em>int</em>) – The current number of simulation step.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of Motifs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="environment.MusicEnvironment.max_agent_memory_capacity">
+<em class="property">property </em><code class="sig-name descname">max_agent_memory_capacity</code><a class="headerlink" href="#environment.MusicEnvironment.max_agent_memory_capacity" title="Permalink to this definition">¶</a></dt>
+<dd><p>The largest memory capacity of any agent in the environment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="environment.MusicEnvironment.save_improvisation">
+<code class="sig-name descname">save_improvisation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/environment.html#MusicEnvironment.save_improvisation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#environment.MusicEnvironment.save_improvisation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the improvisation to MusicXML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The name of the output file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="environment.MusicEnvironment.save_info">
+<code class="sig-name descname">save_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/environment.html#MusicEnvironment.save_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#environment.MusicEnvironment.save_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the environment is destroyed this is called.
+Save the results of the simulation, i.e. the improvisation into file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">MACI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Otso Björklund.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/environment.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

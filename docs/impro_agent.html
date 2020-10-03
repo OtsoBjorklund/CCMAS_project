@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>impro_agent module &#8212; MACI 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-impro_agent">
+<span id="impro-agent-module"></span><h1>impro_agent module<a class="headerlink" href="#module-impro_agent" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="impro_agent.ImprovisingAgent">
+<em class="property">class </em><code class="sig-prename descclassname">impro_agent.</code><code class="sig-name descname">ImprovisingAgent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">env</span></em>, <em class="sig-param"><span class="n">insp_set</span></em>, <em class="sig-param"><span class="n">motif_length</span></em>, <em class="sig-param"><span class="n">memory_size</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">pr_of_contrast</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">conf_decline_factor</span><span class="o">=</span><span class="default_value">0.6</span></em>, <em class="sig-param"><span class="n">conf_th</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/impro_agent.html#ImprovisingAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#impro_agent.ImprovisingAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">creamas.core.agent.CreativeAgent</span></code></p>
+<p>Agent class that improvises music based on motifs.</p>
+<p>The agent has a fixed size vocabulary that it learns from files selected randomly from
+the directories specified by inspiring set. The agent plays motifs by selecting them from its vocabulary
+and making variations of them. The agent can also learn new motifs from the environment.</p>
+<p>The agent evaluates its own performance using the variable confidence which is the average of all evaluations
+the agent has made of its own playing. The agents play motifs only if they think that it would improve their
+confidence level.</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">param env</dt>
+<dd class="field-odd"><p>The environment that the ImprovisingAgent acts in.</p>
+</dd>
+<dt class="field-even">type env</dt>
+<dd class="field-even"><p>Environment</p>
+</dd>
+<dt class="field-odd">param insp_set</dt>
+<dd class="field-odd"><p>The inspiring set from which the agent learns its vocabulary.
+Dictionary of directories and integers, dir:n, meaning select n motifs from a file randomly selected from dir.</p>
+</dd>
+<dt class="field-even">type insp_set</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+<dt class="field-odd">param motif_length</dt>
+<dd class="field-odd"><p>The length of the motifs the agent uses in quarter note lengths.</p>
+</dd>
+<dt class="field-even">type motif_length</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param name</dt>
+<dd class="field-odd"><p>The name of the agent.</p>
+</dd>
+<dt class="field-even">type name</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+<dt class="field-odd">param pr_of_contrast</dt>
+<dd class="field-odd"><p>Probability that the agent decides to play something contrasting. This tells how ready
+the agent is to play something that is opposite to what it perceives from the environment.</p>
+</dd>
+<dt class="field-even">type pr_of_contrast</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param conf_decline_factor</dt>
+<dd class="field-odd"><p>By what factor the confidence of the agent decreases when it stays silent.
+The confidence is multiplied by this when the agent stays silent, should be in the range [0,9).</p>
+</dd>
+<dt class="field-even">type conf_decline_factor</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param conf_th</dt>
+<dd class="field-odd"><p>By what factor estimated confidence of playing a motif must exceed the
+current confidence level. Value between [0,1], preferably quite small.</p>
+</dd>
+<dt class="field-even">type conf_th</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="py method">
+<dt id="impro_agent.ImprovisingAgent.act">
+<em class="property">async </em><code class="sig-name descname">act</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/impro_agent.html#ImprovisingAgent.act"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#impro_agent.ImprovisingAgent.act" title="Permalink to this definition">¶</a></dt>
+<dd><p>Play motif and add it to the environment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="impro_agent.ImprovisingAgent.create_vocabulary">
+<code class="sig-name descname">create_vocabulary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">insp_set</span></em>, <em class="sig-param"><span class="n">motif_length</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/impro_agent.html#ImprovisingAgent.create_vocabulary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#impro_agent.ImprovisingAgent.create_vocabulary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chooses random motifs of length motif_length from randomly selected files
+from directories defined in insp_set.
+Used for creating the agent’s vocabulary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insp_set</strong> (<em>dict</em>) – How many motifs to pick randomly from a randomly selected file in a directory.
+The keys are directory names and the values are the numbers of motifs.</p></li>
+<li><p><strong>motif_length</strong> (<em>float</em>) – Length of motifs in quarter notes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The vocabulary created from the inspiring set.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="memory.html#memory.Memory" title="memory.Memory">Memory</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="impro_agent.ImprovisingAgent.evaluate">
+<code class="sig-name descname">evaluate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">artifact</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/impro_agent.html#ImprovisingAgent.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#impro_agent.ImprovisingAgent.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate how good the motif was by considering how well it fit into what the agent
+remembers of other agent’s playing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>artifact</strong> (<em>Artifact</em>) – Artifact object containing a motif.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="impro_agent.ImprovisingAgent.listen_to_others">
+<code class="sig-name descname">listen_to_others</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">musical_context</span></em>, <em class="sig-param"><span class="n">step</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/impro_agent.html#ImprovisingAgent.listen_to_others"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#impro_agent.ImprovisingAgent.listen_to_others" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the agent’s knowledge of the musical situation
+and evaluate how well the last played motif worked out.
+Learn surprising motifs from the musical context.
+Update the confidence level of the agent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>musical_context</strong> (<em>list</em>) – Motifs recently played in the environment.</p></li>
+<li><p><strong>step</strong> (<em>int</em>) – The step of the simulation.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="impro_agent.ImprovisingAgent.memory_capacity">
+<em class="property">property </em><code class="sig-name descname">memory_capacity</code><a class="headerlink" href="#impro_agent.ImprovisingAgent.memory_capacity" title="Permalink to this definition">¶</a></dt>
+<dd><p>The maximum number of motifs the agent can remember from the environment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="impro_agent.ImprovisingAgent.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#impro_agent.ImprovisingAgent.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the agent</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="impro_agent.ImprovisingAgent.play_motif">
+<code class="sig-name descname">play_motif</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/impro_agent.html#ImprovisingAgent.play_motif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#impro_agent.ImprovisingAgent.play_motif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find motif with the best evaluation from the agents vocabulary. Create a variation of the motif and see if it
+would be better. If the variation is better, memorize it and return it.
+Estimate if playing the motif would increase the agent’s confidence level. If the motif is estimated to
+not increase the confidence level enough, the agent rests instead i.e. produces a motif that is all rests.
+With probability pr_of_contrast the agent plays something contrary to the context or random.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Motif with best evaluation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="motif.html#motif.Motif" title="motif.Motif">Motif</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="impro_agent.ImprovisingAgent.surprisingness">
+<code class="sig-name descname">surprisingness</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">motif</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/impro_agent.html#ImprovisingAgent.surprisingness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#impro_agent.ImprovisingAgent.surprisingness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the surprisingness of motif by comparing how
+different it is to the most similar motif the agent knows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>motif</strong> (<a class="reference internal" href="motif.html#motif.Motif" title="motif.Motif"><em>Motif</em></a>) – The motif whose suprisingness is evaluated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rating in the range [0, 1] with 1 being most surprising.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">MACI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Otso Björklund.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/impro_agent.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

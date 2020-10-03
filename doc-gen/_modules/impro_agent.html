@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>impro_agent &#8212; MACI 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="MACI 0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for impro_agent</h1><div class="highlight"><pre>
+<span></span><span class="c1"># MACI. Course project for Computational Creativity and Multi-Agent Systems. Fall 2016.</span>
+<span class="c1"># Otso Björklund.</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">from</span> <span class="nn">creamas</span> <span class="k">import</span> <span class="n">CreativeAgent</span><span class="p">,</span> <span class="n">Artifact</span>
+<span class="kn">from</span> <span class="nn">motif</span> <span class="k">import</span> <span class="n">Motif</span>
+
+<span class="kn">import</span> <span class="nn">musicxmlio</span>
+
+
+<div class="viewcode-block" id="ImprovisingAgent"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent">[docs]</a><span class="k">class</span> <span class="nc">ImprovisingAgent</span><span class="p">(</span><span class="n">CreativeAgent</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_motif_length</span> <span class="o">=</span> <span class="n">motif_length</span>
+        <span class="c1"># Todo: vocabulary should be a Memory object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_vocabulary</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">)</span>
+        <span class="c1"># What the agent remembers of other agents playing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># The overall evaluation of the agent by itself</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sum_of_evaluations</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_motifs_played</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overall_performance</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<div class="viewcode-block" id="ImprovisingAgent.create_vocabulary"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.create_vocabulary">[docs]</a>    <span class="k">def</span> <span class="nf">create_vocabulary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">):</span>
+        <span class="c1"># Todo: Enable learning from multiple files.</span>
+        <span class="k">return</span> <span class="n">musicxmlio</span><span class="o">.</span><span class="n">select_random_motifs</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">motif_length</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+<div class="viewcode-block" id="ImprovisingAgent.play_motif"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.play_motif">[docs]</a>    <span class="k">def</span> <span class="nf">play_motif</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Find motif with the best evaluation &quot;&quot;&quot;</span>
+        <span class="n">best_motif</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">best_evaluation</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">motif</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vocabulary</span><span class="p">:</span>
+            <span class="n">evaluation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">Artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="n">motif</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s1">&#39;music&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">evaluation</span> <span class="o">&gt;</span> <span class="n">best_evaluation</span><span class="p">:</span>
+                <span class="n">best_motif</span> <span class="o">=</span> <span class="n">motif</span>
+                <span class="n">best_evaluation</span> <span class="o">=</span> <span class="n">evaluation</span>
+
+        <span class="c1"># Todo: Try variations and improving the motif using them</span>
+
+        <span class="c1"># Todo: improve the evaluation of the overall performance</span>
+        <span class="n">overall_performance</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sum_of_evaluations</span> <span class="o">+</span> <span class="n">best_evaluation</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motifs_played</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">overall_performance</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overall_performance</span> <span class="o">-</span> <span class="mf">0.01</span><span class="p">:</span>
+            <span class="n">best_motif</span> <span class="o">=</span> <span class="n">Motif</span><span class="o">.</span><span class="n">get_rest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motif_length</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overall_performance</span> <span class="o">=</span> <span class="n">overall_performance</span>
+
+        <span class="k">return</span> <span class="n">best_motif</span></div>
+
+<div class="viewcode-block" id="ImprovisingAgent.listen_to_others"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.listen_to_others">[docs]</a>    <span class="k">def</span> <span class="nf">listen_to_others</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">musical_context</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update the agent&#39;s knowledge of the musical situation. &quot;&quot;&quot;</span>
+        <span class="c1"># Todo: come up with a more sensible way of handling the knowledge of musical context</span>
+        <span class="n">num_motifs</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">musical_context</span><span class="p">,</span> <span class="n">num_motifs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImprovisingAgent.evaluate"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifact</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Evaluate how good the previously played motif was when compared to what others played.  &quot;&quot;&quot;</span>
+        <span class="n">own_motif</span> <span class="o">=</span> <span class="n">artifact</span><span class="o">.</span><span class="n">obj</span>
+        <span class="n">fit</span> <span class="o">=</span> <span class="n">own_motif</span><span class="o">.</span><span class="n">fit_into_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_memory_of_situation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fit</span></div>
+
+<div class="viewcode-block" id="ImprovisingAgent.act"><a class="viewcode-back" href="../impro_agent.html#impro_agent.ImprovisingAgent.act">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Writing concurrently to the dictionary should be ok as all agents write to different keys...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_music_to_part</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">play_motif</span><span class="p">())</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Otso Björklund.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

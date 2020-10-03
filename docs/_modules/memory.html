@@ -1,63 +1,186 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>memory &#8212; MACI 0.1 documentation</title>
-    
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="MACI 0.1 documentation" href="../index.html" />
-    <link rel="up" title="Module code" href="index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for memory</h1><div class="highlight"><pre>
-<span></span>
+<span></span><span class="c1"># MACI.</span>
+<span class="c1"># Otso Björklund.</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+
 
 <div class="viewcode-block" id="Memory"><a class="viewcode-back" href="../memory.html#memory.Memory">[docs]</a><span class="k">class</span> <span class="nc">Memory</span><span class="p">():</span>
-    <span class="k">pass</span></div>
-    <span class="c1"># -List etc. of motifs</span>
-    <span class="c1"># -Find most similar(motif)</span>
-    <span class="c1"># -memorize(motif), lisää muistiin uuden ja jos muisti on täynnä niin korvaa jonkin.</span>
-    <span class="c1"># -</span>
+    <span class="sd">&quot;&quot;&quot; The memory of the agents. Container class for Motifs. Is iterable.</span>
+
+<span class="sd">        :param capacity: The maximum number of motifs that can be remembered.</span>
+<span class="sd">        :type capacity: int &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capacity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">capacity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span>
+
+<div class="viewcode-block" id="Memory.memorize"><a class="viewcode-back" href="../memory.html#memory.Memory.memorize">[docs]</a>    <span class="k">def</span> <span class="nf">memorize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">motif</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">replace_most_similar</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add new motif to memory. If memory is full replace the most similar or oldest motif with the new one.</span>
+
+<span class="sd">            :param motif: Motif to be added to memory.</span>
+<span class="sd">            :type motif: Motif</span>
+<span class="sd">            :param step: The step of simulation in which the motif was added.</span>
+<span class="sd">            :type step: int</span>
+<span class="sd">            :param replace_most_similar: When memory is full, if this is true the new motif replaces the most similar</span>
+<span class="sd">                motif in memory. If this is false, then replaces the oldest motif: the one with smallest step.</span>
+<span class="sd">            :type replace_most_similar: bool &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">motif</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">replace_most_similar</span><span class="p">:</span>
+                <span class="c1"># Replace most similar motif with new motif</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_of_most_similar</span><span class="p">(</span><span class="n">motif</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Replace oldest, ie with smallest step</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_of_oldest</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">motif</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Memory.get_random_motif"><a class="viewcode-back" href="../memory.html#memory.Memory.get_random_motif">[docs]</a>    <span class="k">def</span> <span class="nf">get_random_motif</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Choose a random Motif from the memory.</span>
+
+<span class="sd">            :return: Randomly selected motif.</span>
+<span class="sd">            :rtype: Motif &quot;&quot;&quot;</span>
+        <span class="n">random_elem</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">random_elem</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Memory.find_most_similar"><a class="viewcode-back" href="../memory.html#memory.Memory.find_most_similar">[docs]</a>    <span class="k">def</span> <span class="nf">find_most_similar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Find the motif from memory that is the most similar to m.</span>
+
+<span class="sd">            :param m: The query motif</span>
+<span class="sd">            :type m: Motif &quot;&quot;&quot;</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_of_most_similar</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Memory.find_least_similar"><a class="viewcode-back" href="../memory.html#memory.Memory.find_least_similar">[docs]</a>    <span class="k">def</span> <span class="nf">find_least_similar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Find the motif that is least similar to m.</span>
+
+<span class="sd">            :param m: The query motif</span>
+<span class="sd">            :type m: Motif &quot;&quot;&quot;</span>
+
+        <span class="c1"># Similarity rating is at most 1.0 so start off with value 1.1</span>
+        <span class="n">min_similarity</span> <span class="o">=</span> <span class="mf">1.1</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">:</span>
+            <span class="n">motif</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">similarity</span> <span class="o">=</span> <span class="n">motif</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">similarity</span> <span class="o">&lt;</span> <span class="n">min_similarity</span><span class="p">:</span>
+                <span class="n">min_similarity</span> <span class="o">=</span> <span class="n">similarity</span>
+                <span class="n">least_similar</span> <span class="o">=</span> <span class="n">motif</span>
+
+        <span class="k">return</span> <span class="n">least_similar</span></div>
+
+<div class="viewcode-block" id="Memory.index_of_oldest"><a class="viewcode-back" href="../memory.html#memory.Memory.index_of_oldest">[docs]</a>    <span class="k">def</span> <span class="nf">index_of_oldest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Find the motif with the smallest step, i.e. the one that is oldest. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">min_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">)):</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="n">min_step</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">min_step</span> <span class="o">=</span> <span class="n">step</span>
+
+        <span class="k">return</span> <span class="n">index</span></div>
+
+<div class="viewcode-block" id="Memory.index_of_most_similar"><a class="viewcode-back" href="../memory.html#memory.Memory.index_of_most_similar">[docs]</a>    <span class="k">def</span> <span class="nf">index_of_most_similar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Find the index of the motif in memory that is most similar to m.</span>
+
+<span class="sd">            :param m: The query motif</span>
+<span class="sd">            :type m: Motif &quot;&quot;&quot;</span>
+
+        <span class="n">max_similarity</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">)):</span>
+            <span class="n">motif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sim</span> <span class="o">=</span> <span class="n">motif</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sim</span> <span class="o">&gt;</span> <span class="n">max_similarity</span><span class="p">:</span>
+                <span class="n">max_similarity</span> <span class="o">=</span> <span class="n">sim</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="k">return</span> <span class="n">index</span></div>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Provides an iterator that iterates over the Motifs only. &quot;&quot;&quot;</span>
+        <span class="k">class</span> <span class="nc">MemoryIterator</span><span class="p">:</span>
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tuple_list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tuple_list</span> <span class="o">=</span> <span class="n">tuple_list</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tuple_list</span><span class="p">):</span>
+                    <span class="n">motif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tuple_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">return</span> <span class="n">motif</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">MemoryIterator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Number of motifs in memory. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_motifs</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">MACI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
@@ -67,15 +190,23 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -84,8 +215,8 @@
       &copy;2016, Otso Björklund.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>musicxmlio module &#8212; MACI 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-musicxmlio">
+<span id="musicxmlio-module"></span><h1>musicxmlio module<a class="headerlink" href="#module-musicxmlio" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="musicxmlio.get_random_filename">
+<code class="sig-prename descclassname">musicxmlio.</code><code class="sig-name descname">get_random_filename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/musicxmlio.html#get_random_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#musicxmlio.get_random_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the relative path of a random file from directory specified by path.
+:param path: The path of the directory from which to select random file.
+:type path: str
+:return: Path to randomly selected file.
+:rtype: str</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="musicxmlio.parts_to_musicxml_midi">
+<code class="sig-prename descclassname">musicxmlio.</code><code class="sig-name descname">parts_to_musicxml_midi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parts</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/musicxmlio.html#parts_to_musicxml_midi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#musicxmlio.parts_to_musicxml_midi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the parts dictionary into a MusicXML file and MIDI file with name filename.
+Each part in the parts will be its own part in the MusicXML score and its own channel in MIDI file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parts</strong> (<em>Dictionary with strings as keys and lists of Motif objects as
+values. The keys will be used as part names in the score.</em>) – The parts to be written in to the score.</p></li>
+<li><p><strong>filename</strong> (<em>String.</em>) – filename for the MusicXML file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="musicxmlio.read_musicxml_to_list">
+<code class="sig-prename descclassname">musicxmlio.</code><code class="sig-name descname">read_musicxml_to_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filepath</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/musicxmlio.html#read_musicxml_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#musicxmlio.read_musicxml_to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read all the parts in the MusicXML file and return a list of note or rest objects.
+Ignores everything other than Note and Rest objects. The parts are concatenated to each other
+so that parts that were simultaneous in the score are sequential in the list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filepath</strong> (<em>String.</em>) – The path to the MusicXML file to be read.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a list of notes and rests.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List of music21.note.Note and music21.note.Rest objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="musicxmlio.select_random_motifs">
+<code class="sig-prename descclassname">musicxmlio.</code><code class="sig-name descname">select_random_motifs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">motif_length</span></em>, <em class="sig-param"><span class="n">num_motifs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/musicxmlio.html#select_random_motifs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#musicxmlio.select_random_motifs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select random sequences of notes as motifs from a MusicXML file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>String.</em>) – Name of the file from which motifs will be selected.</p></li>
+<li><p><strong>motif_length</strong> (<em>Float.</em>) – The length of the motifs to be selected in quarter notes.</p></li>
+<li><p><strong>num_motifs</strong> (<em>Integer.</em>) – Number of motifs to be selected from file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of num_motifs motifs with length motif_length.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List of motif.Motif objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">MACI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Otso Björklund.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/musicxmlio.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
